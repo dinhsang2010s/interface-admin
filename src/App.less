@@ -1,0 +1,59 @@
+.App {
+  height: 100vh;
+  .main {
+    height: 100%;
+    position: relative;
+    .slider {
+      box-shadow: 5px 0px 10px 0px var(--box-shadow-color);
+      padding-top: 10px;
+      .menu {
+        //border-inline-end-color: #fff !important;
+      }
+    }
+
+    .header {
+      box-shadow: 10px 0px 10px 0px var(--box-shadow-color);
+      width: 100%;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      top: 0;
+      position: sticky;
+      z-index: 9999;
+      padding-left: 0;
+      overflow: hidden;
+      .logo {
+        width: 250px;
+        min-width: 250px;
+        height: 100%;
+        background: no-repeat center url(/vite.svg);
+      }
+      .start {
+        flex-grow: 3;
+        h2 {
+          line-height: 0;
+        }
+      }
+      .search-global {
+        flex-grow: 1;
+        .ant-input-affix-wrapper {
+          padding: 7px 11px;
+          border: unset;
+          background: var(--bg-search);
+
+          &:hover {
+            border: 1px solid var(--border-hover-color);
+          }
+
+          .ant-input {
+            background: var(--bg-search);
+          }
+        }
+      }
+      .badge {
+        margin-left: 20px;
+        line-height: 0;
+      }
+    }
+  }
+}
