@@ -3,16 +3,21 @@
   .main {
     height: 100%;
     position: relative;
+
     .slider {
-      box-shadow: 5px 0px 10px 0px var(--box-shadow-color);
-      padding-top: 10px;
+      box-shadow: var(--box-shadow);
+      .logo {
+        height: 64px;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+      }
       .menu {
         //border-inline-end-color: #fff !important;
       }
     }
 
     .header {
-      box-shadow: 10px 0px 10px 0px var(--box-shadow-color);
       width: 100%;
       display: flex;
       justify-content: space-between;
@@ -22,12 +27,6 @@
       z-index: 9999;
       padding-left: 0;
       overflow: hidden;
-      .logo {
-        width: 250px;
-        min-width: 250px;
-        height: 100%;
-        background: no-repeat center url(/vite.svg);
-      }
       .start {
         flex-grow: 3;
         h2 {

@@ -25,6 +25,10 @@ interface DataType {
 
 const columns: ColumnsType<DataType> = [
   {
+    key: "sort",
+    width: "50px",
+  },
+  {
     key: "name",
     title: "Name",
     dataIndex: "name",
@@ -38,10 +42,6 @@ const columns: ColumnsType<DataType> = [
     key: "address",
     title: "Address",
     dataIndex: "address",
-  },
-  {
-    key: "sort",
-    width: "70px",
   },
 ];
 
@@ -113,19 +113,19 @@ export const Post = () => {
   };
 
   return (
-    <div className="category">
-      <h1 className="title"> Category</h1>
-      <div className="nav-category">
+    <div className="post">
+      <h2 className="title__post"> Post</h2>
+      <div className="nav__post">
         {/* <Search /> */}
         <Button
-          className="add-category"
+          className="add__post"
           type="primary"
           icon={<i className="fa-solid fa-plus"></i>}
         >
           Create New Category
         </Button>
       </div>
-      <div className="table-category">
+      <div className="table__post">
         <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
           <SortableContext
             // rowKey array

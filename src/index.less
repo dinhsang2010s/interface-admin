@@ -1,11 +1,36 @@
 html {
   --primary-color: #018535;
-  --text-color: #8e8686;
-  --text-item-selected: #ecf7ee;
+
   --box-shadow-color: rgba(27, 23, 30, 0.1);
   --border-hover-color: #43a469;
   --bg-search: #eeeeee;
   --bg-header: #f8f8f8;
+  --bg-component: #fff;
+
+  --v-global-theme-primary: 115, 103, 240;
+  --v-high-emphasis-opacity: 0.78;
+  --v-theme-on-background: 47, 43, 61;
+
+  --theme-primary: rgba(115, 103, 240);
+  --theme-background: rgba(248, 247, 250);
+  --theme-secondary: rgba(168, 170, 174);
+  --border-color: 47, 43, 61;
+  --border-opacity: 0.16;
+
+  --text-color: rgba(
+    var(--v-theme-on-background),
+    var(--v-high-emphasis-opacity)
+  );
+  --text-item-selected: rgb(237, 247, 239);
+
+  --bg-menu-category: rgb(255, 255, 255);
+  --bg-item-category-selected: linear-gradient(
+    72.47deg,
+    rgb(var(--v-global-theme-primary)) 22.16%,
+    rgba(var(--v-global-theme-primary), 0.7) 76.47%
+  );
+
+  --box-shadow: 0 2px 6px rgba(var(--v-global-theme-primary), 0.48);
 }
 
 body {
@@ -14,8 +39,16 @@ body {
   box-sizing: border-box;
 }
 
+.ant-menu .ant-menu-item .ant-menu-title-content {
+  font-size: 15px;
+  line-height: 22.5px;
+  font-weight: 500;
+  letter-spacing: 0.15px;
+  color: var(--text-color);
+}
+
 .ant-menu .ant-menu-item-selected {
-  background: var(--primary-color);
+  background: var(--bg-item-category-selected);
 }
 
 .ant-menu .ant-menu-item-selected .ant-menu-title-content {
@@ -30,15 +63,12 @@ body {
   color: var(--text-item-selected);
 }
 
-:where(
-    .css-dev-only-do-not-override-1lvoz50
-  ).ant-menu-light.ant-menu-root.ant-menu-inline,
-:where(.css-dev-only-do-not-override-1lvoz50).ant-menu-light
-  > .ant-menu.ant-menu-root.ant-menu-inline,
-:where(
-    .css-dev-only-do-not-override-1lvoz50
-  ).ant-menu-light.ant-menu-root.ant-menu-vertical,
-:where(.css-dev-only-do-not-override-1lvoz50).ant-menu-light
-  > .ant-menu.ant-menu-root.ant-menu-vertical {
+.ant-menu,
+.ant-menu-root,
+.ant-menu-vertical {
   border-inline-end: unset !important;
+}
+
+.ant-table-wrapper .ant-table {
+  border-radius: 10px;
 }
