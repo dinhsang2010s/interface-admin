@@ -1,11 +1,15 @@
 .post {
-  .title__post {
-  }
-  .nav__post {
-  }
-  .table__post {
+  &-table {
     background: var(--bg-component);
-    border-radius: 10px;
     padding: 20px 20px 0px;
+    border-radius: 6px;
+    &-nav {
+      justify-content: space-between;
+      .nav-function {
+        button {
+          margin-left: 20px;
+        }
+      }
+    }
   }
 }

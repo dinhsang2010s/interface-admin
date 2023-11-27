@@ -21,30 +21,5 @@ const items = [
 ];
 
 export const Dashboard = () => {
-  return (
-    <Row>
-      <Col className="info" flex={3}>
-        <Carousel>
-          <div className="theme">
-            <div className="item-theme">item1</div>
-            <div className="item-theme">item2</div>
-            <div className="item-theme">item1</div>
-            <div className="item-theme">item2</div>
-          </div>
-          <div className="theme">
-            <div className="item-theme">item1</div>
-            <div className="item-theme">item2</div>
-          </div>
-          <div className="theme">
-            <div className="item-theme">item1</div>
-            <div className="item-theme">item2</div>
-          </div>
-        </Carousel>
-        <div className="todo">asdas</div>
-      </Col>
-      <Col className="schedule" flex={2}>
-        2 / 5
-      </Col>
-    </Row>
-  );
+  return <div className="dashboard">dashboard</div>;
 };

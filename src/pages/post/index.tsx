@@ -12,9 +12,10 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import React, { useState } from "react";
-import { Button, Table } from "antd";
+import { Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import TableAntd from "../../components/Table";
+import Search from "../../components/Search";
 
 interface DataType {
   key: string;
@@ -112,23 +113,32 @@ export const Post = () => {
     }
   };
 
+  const onSearchPost = (value: string) => {
+    console.log(value);
+  };
+
   return (
     <div className="post">
-      <h2 className="title__post"> Post</h2>
-      <div className="nav__post">
-        {/* <Search /> */}
-        <Button
-          className="add__post"
-          type="primary"
-          icon={<i className="fa-solid fa-plus"></i>}
-        >
-          Create New Category
-        </Button>
-      </div>
-      <div className="table__post">
+      <div className="post-table">
+        <div className="post-table-nav flex-center">
+          <h2 className="nav-title">Post Collection</h2>
+          <div className="nav-function">
+            <Search
+              width={350}
+              placeholder="Search posts..."
+              onChange={onSearchPost}
+            />
+            <Button
+              className="post-add"
+              type="primary"
+              icon={<i className="fa-solid fa-plus"></i>}
+            >
+              Add Post
+            </Button>
+          </div>
+        </div>
         <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
           <SortableContext
-            // rowKey array
             items={dataSource.map((i) => i.key)}
             strategy={verticalListSortingStrategy}
           >

@@ -1,8 +1,9 @@
 import { useState } from "react";
 import "./App.less";
 import { Link, Outlet } from "react-router-dom";
-import { Input, Layout, Menu } from "antd";
+import { Button, Input, Layout, Menu } from "antd";
 import { Avatar, Badge, Space } from "antd";
+import SearchModal from "./components/SearchModal";
 const { Header, Content, Sider } = Layout;
 
 const menu = [
@@ -58,35 +59,20 @@ function App() {
         </Sider>
         <Layout>
           <Header className="header">
-            <div className="start">
-              <h2>hello</h2>
-            </div>
-            <div className="search-global">
-              <Input
-                placeholder="Search..."
-                prefix={
-                  <i
-                    style={{ padding: "0px 10px 0px 5px", color: "#989393" }}
-                    className="fa-solid fa-magnifying-glass"
-                  ></i>
-                }
-              />
-            </div>
-            <div className="badge">
-              <Space size="small">
-                <Badge count={99}>
-                  <Avatar shape="square" size="default" />
-                </Badge>
-                <Badge count={100}>
-                  <Avatar shape="square" size="default" />
-                </Badge>
-                <Badge count={99} overflowCount={10}>
-                  <Avatar shape="square" size="default" />
-                </Badge>
-                <Badge count={1000} overflowCount={999}>
-                  <Avatar shape="square" size="default" />
-                </Badge>
-              </Space>
+            <div className="header-main">
+              <div className="header-main-left flex">
+                <Button
+                  icon={<i className="fa fa-bars fa-2x" aria-hidden="true"></i>}
+                  onClick={() => setCollapsed(!collapsed)}
+                  style={{ border: "unset", marginRight: 20 }}
+                />
+                <SearchModal />
+              </div>
+              <div className="header-main-right flex">
+                <div className="info-user">
+                  <img className="w-full" src="/vite.svg" alt="" />
+                </div>
+              </div>
             </div>
           </Header>
           <Content
