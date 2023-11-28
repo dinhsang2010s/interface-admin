@@ -12,10 +12,9 @@ import {
 } from "@dnd-kit/sortable";
 import { CSS } from "@dnd-kit/utilities";
 import React, { useState } from "react";
-import { Button } from "antd";
 import type { ColumnsType } from "antd/es/table";
 import TableAntd from "../../components/Table";
-import Search from "../../components/Search";
+import PageInit from "../../components/PageInit";
 
 interface DataType {
   key: string;
@@ -114,56 +113,37 @@ export const Post = () => {
   };
 
   const onSearchPost = (value: string) => {
-    console.log(value);
+    console.log("asdasd", value);
   };
 
   return (
-    <div className="post">
-      <div className="post-table">
-        <div className="post-table-nav flex-center">
-          <h2 className="nav-title">Post Collection</h2>
-          <div className="nav-function">
-            <Search
-              width={350}
-              placeholder="Search posts..."
-              onChange={onSearchPost}
-            />
-            <Button
-              className="post-add"
-              type="primary"
-              icon={<i className="fa-solid fa-plus"></i>}
-            >
-              Add Post
-            </Button>
-          </div>
-        </div>
-        <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
-          <SortableContext
-            items={dataSource.map((i) => i.key)}
-            strategy={verticalListSortingStrategy}
-          >
-            <TableAntd
-              components={{
-                body: {
-                  row: Row,
-                },
-              }}
-              pagination={
-                dataSource.length > 20
-                  ? {
-                      defaultPageSize: 20,
-                      showSizeChanger: true,
-                      pageSizeOptions: ["20", "50", "100"],
-                    }
-                  : false
-              }
-              rowKey="key"
-              columns={columns}
-              dataSource={dataSource}
-            />
-          </SortableContext>
-        </DndContext>
-      </div>
-    </div>
+    <PageInit title="Post" onChangeValueSearch={onSearchPost}>
+      <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
+        <SortableContext
+          items={dataSource.map((i) => i.key)}
+          strategy={verticalListSortingStrategy}
+        >
+          <TableAntd
+            components={{
+              body: {
+                row: Row,
+              },
+            }}
+            pagination={
+              dataSource.length > 20
+                ? {
+                    defaultPageSize: 20,
+                    showSizeChanger: true,
+                    pageSizeOptions: ["20", "50", "100"],
+                  }
+                : false
+            }
+            rowKey="key"
+            columns={columns}
+            dataSource={dataSource}
+          />
+        </SortableContext>
+      </DndContext>
+    </PageInit>
   );
 };

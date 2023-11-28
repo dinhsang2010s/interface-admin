@@ -1,8 +1,7 @@
 import { useState } from "react";
 import "./App.less";
 import { Link, Outlet } from "react-router-dom";
-import { Button, Input, Layout, Menu } from "antd";
-import { Avatar, Badge, Space } from "antd";
+import { Button, Layout, Menu } from "antd";
 import SearchModal from "./components/SearchModal";
 const { Header, Content, Sider } = Layout;
 
@@ -62,11 +61,11 @@ function App() {
             <div className="header-main">
               <div className="header-main-left flex">
                 <Button
-                  icon={<i className="fa fa-bars fa-2x" aria-hidden="true"></i>}
+                  icon={<i className="fa fa-bars" aria-hidden="true"></i>}
                   onClick={() => setCollapsed(!collapsed)}
                   style={{ border: "unset", marginRight: 20 }}
                 />
-                <SearchModal />
+                <SearchModal title="Search all..." />
               </div>
               <div className="header-main-right flex">
                 <div className="info-user">
@@ -77,7 +76,7 @@ function App() {
           </Header>
           <Content
             style={{
-              padding: "0px 30px",
+              padding: "5px 30px",
               overflow: "hidden",
             }}
           >

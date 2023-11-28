@@ -1,6 +1,7 @@
 import { Input } from "antd";
 import "./style.less";
-import { useCallback, useMemo, useState } from "react";
+import { CSSProperties, useState } from "react";
+import React from "react";
 import { debounce } from "lodash";
 
 interface Props {
@@ -8,28 +9,30 @@ interface Props {
   width?: number | string;
   height?: number | string;
   placeholder?: string;
+  style?: CSSProperties | undefined;
   onChange: (value: string) => void;
 }
 
 const Search = (props: Props) => {
   const [value, setValue] = useState<string>("");
 
-  const debouncedChangeHandler = (e: any) => {
-    setValue(e.target.value);
-    props.onChange(e.target.value);
+  const onChange = (value: string) => {
+    props.onChange(value);
   };
+
+  const debounced = React.useCallback(debounce(onChange, 500), []);
 
   return (
     <Input
       className={`search-input ${props.className}`}
-      style={{
-        width: props.width ?? "auto",
-        height: props.height ?? "auto",
-      }}
+      style={props.style}
       prefix={<i className="fa fa-search"></i>}
       placeholder={props.placeholder ?? "Search..."}
       value={value}
-      onChange={debouncedChangeHandler}
+      onChange={(e) => {
+        setValue(e.target.value);
+        debounced(e.target.value);
+      }}
     />
   );
 };

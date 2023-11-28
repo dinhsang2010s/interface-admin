@@ -2,7 +2,11 @@ import { Button, Modal } from "antd";
 import { useState } from "react";
 import "./style.less";
 
-const SearchModal = () => {
+interface Props {
+  title?: string;
+}
+
+const SearchModal = (props: Props) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
 
   const showModal = () => {
@@ -22,7 +26,7 @@ const SearchModal = () => {
         onClick={showModal}
         icon={<i className="fa fa-magnifying-glass"></i>}
       >
-        Search...
+        {props.title || "Search..."}
       </Button>
       <Modal
         title="Basic Modal"
