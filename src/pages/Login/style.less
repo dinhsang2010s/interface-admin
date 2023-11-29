@@ -1,0 +1,30 @@
+.login {
+  height: 100vh;
+  width: 100vw;
+
+  &-image {
+    margin: 30px;
+    width: 60%;
+    background: var(--theme-background);
+    border-radius: 6px;
+    img {
+      width: inherit;
+    }
+  }
+  &-form {
+    margin: auto;
+  }
+}
+
+@media only screen and (max-width: 500px) {
+  .login {
+    &-image {
+      width: 0;
+      margin: 0;
+    }
+    &-form {
+      width: 100%;
+      padding: 0px 50px;
+    }
+  }
+}

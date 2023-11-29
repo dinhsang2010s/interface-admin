@@ -13,7 +13,7 @@ import {
 import { CSS } from "@dnd-kit/utilities";
 import React, { useState } from "react";
 import type { ColumnsType } from "antd/es/table";
-import TableAntd from "../../components/Table";
+import Table from "../../components/Table";
 import PageInit from "../../components/PageInit";
 
 interface DataType {
@@ -123,7 +123,7 @@ export const Post = () => {
           items={dataSource.map((i) => i.key)}
           strategy={verticalListSortingStrategy}
         >
-          <TableAntd
+          <Table
             components={{
               body: {
                 row: Row,

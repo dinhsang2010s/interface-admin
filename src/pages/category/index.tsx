@@ -1,7 +1,7 @@
 import "./style.less";
 import React, { useState } from "react";
 import type { ColumnsType } from "antd/es/table";
-import TableAntd from "../../components/Table";
+import Table from "../../components/Table";
 import PageInit from "../../components/PageInit";
 
 interface DataType {
@@ -58,7 +58,7 @@ export const Category = () => {
 
   return (
     <PageInit title="Category" onChangeValueSearch={onSearchCategory}>
-      <TableAntd
+      <Table
         pagination={
           dataSource.length > 20
             ? {

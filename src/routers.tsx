@@ -2,6 +2,7 @@ import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import { Button } from "antd";
 import { Category, Dashboard, Post } from "./pages";
+import Login from "./pages/Login";
 
 export const Router = createBrowserRouter([
   {
@@ -28,10 +29,6 @@ export const Router = createBrowserRouter([
   },
   {
     path: "login",
-    element: (
-      <div>
-        <Button>adsa</Button>
-      </div>
-    ),
+    element: <Login />,
   },
 ]);
