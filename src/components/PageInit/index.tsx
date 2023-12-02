@@ -23,9 +23,17 @@ const PageInit = (props: Props) => {
     >
       <div
         className="page-nav flex-center"
-        style={{ justifyContent: "space-between" }}
+        style={{ justifyContent: "space-between", marginBottom: 5 }}
       >
-        <h2 className="nav-title">{`${props.title} lists`}</h2>
+        <h3
+          style={{
+            background: "var(--theme-background)",
+            padding: 6,
+            borderRadius: 6,
+            boxShadow: "var(--box-shadow)",
+          }}
+          className="nav-title"
+        >{`${props.title} lists`}</h3>
         <div className="nav-function flex">
           <Search
             placeholder={`Search ${props.title}...`}
