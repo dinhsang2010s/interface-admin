@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import { Category, Dashboard, Post } from "./pages";
-import Login from "./pages/Login";
+import Login from "./pages/login";
 
 export const Router = createBrowserRouter([
   {

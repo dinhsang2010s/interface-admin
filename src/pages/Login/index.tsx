@@ -1,20 +1,30 @@
+import { useState } from "react";
+import { useLogin } from "../../hooks/useRequest";
 import "./style.less";
-import { Button, Form, Input, Typography } from "antd";
+import { Button, Form, Input, Typography, message } from "antd";
+import { useSleep } from "../../hooks/useSleep";
 const { Title } = Typography;
 
 const Login = () => {
-  const onFinish = (values: any) => {
-    console.log("Success:", values);
-  };
+  const [loading, setLoading] = useState<boolean>(false);
 
-  const onFinishFailed = (errorInfo: any) => {
-    console.log("Failed:", errorInfo);
-  };
+  const onFinish = async (values: any) => {
+    setLoading(true);
+    useLogin(values)
+      .then((res: IToken) => {
+        if (res) {
+          localStorage.setItem("token", res.accessToken);
+          window.location.replace("/");
+        }
 
-  type FieldType = {
-    username?: string;
-    password?: string;
-    remember?: string;
+        useSleep(1 * 1000).then(() => {
+          setLoading(false);
+        });
+      })
+      .catch((ex: any) => {
+        message.error(ex.message);
+        setLoading(false);
+      });
   };
 
   return (
@@ -30,22 +40,21 @@ const Login = () => {
             <img src="/vite.svg" alt="" />
           </div>
           <Title style={{ margin: "25px 0px 0px", letterSpacing: 3 }} level={4}>
-            Welcome to vuexy!
+            Welcome to system admin!
           </Title>
           <Title style={{ fontWeight: 300, margin: "5px 0px 20px" }} level={5}>
-            Please sign-in to your account and start the system!
+            Please sign-in to your account and start the system admin!
           </Title>
         </div>
         <Form
           name="basic"
           layout="vertical"
           onFinish={onFinish}
-          onFinishFailed={onFinishFailed}
           autoComplete="off"
         >
           <Form.Item
             label="Username"
-            name="username"
+            name="name"
             rules={[{ required: true, message: "Please input your username!" }]}
           >
             <Input style={{ height: 40 }} />
@@ -65,6 +74,7 @@ const Login = () => {
               className="w-full"
               type="primary"
               htmlType="submit"
+              loading={loading}
             >
               Login
             </Button>
