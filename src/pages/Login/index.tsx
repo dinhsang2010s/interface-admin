@@ -14,7 +14,7 @@ const Login = () => {
       .then((res: IToken) => {
         if (res) {
           localStorage.setItem("token", res.accessToken);
-          window.location.replace("/");
+          window.location.replace("/dashboard");
         }
 
         useSleep(1 * 1000).then(() => {

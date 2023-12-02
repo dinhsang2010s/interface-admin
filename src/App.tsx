@@ -43,10 +43,11 @@ function App() {
       useGetProfile().then((res: any) => {
         if (res.id) setAuth(true);
       });
+
+      useSleep(1 * 1000).then(() => {
+        setLoading(false);
+      });
     }
-    useSleep(1 * 1000).then(() => {
-      setLoading(false);
-    });
   }, [auth]);
 
   return loading ? (
