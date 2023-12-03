@@ -39,16 +39,13 @@ function App() {
   const [loading, setLoading] = useState<boolean>(true);
 
   useEffect(() => {
-    if (!auth) {
+    if (!auth)
       useGetProfile().then((res: any) => {
         if (res.id) setAuth(true);
       });
 
-      useSleep(1 * 1000).then(() => {
-        setLoading(false);
-      });
-    }
-  }, [auth]);
+    useSleep(1 * 1000).then(() => setLoading(false));
+  }, []);
 
   return loading ? (
     <LoadingPage />
@@ -69,6 +66,7 @@ function App() {
               <Menu
                 className="menu"
                 mode="inline"
+                defaultSelectedKeys={["dashboard"]}
                 selectedKeys={[
                   location.pathname.split("/")?.[1] || "dashboard",
                 ]}

@@ -28,7 +28,7 @@ export const theme = {
     },
     Table: {
       headerBg: "#ffffff",
-      headerBorderRadius: 0,
+      headerBorderRadius: 6,
       headerColor: "#87858f",
     },
   },
