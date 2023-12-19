@@ -27,9 +27,11 @@ export const theme = {
       fullBg: "#ffffff",
     },
     Table: {
-      headerBg: "#ffffff",
-      headerBorderRadius: 6,
-      headerColor: "#87858f",
+      headerBorderRadius: 0,
+      headerBg: "rgb(236, 233, 244)",
+      headerColor: "rgb(78, 53, 149)",
+      headerSortActiveBg: "rgb(236, 233, 244)",
+      headerSortHoverBg: "rgb(236, 233, 244)",
     },
   },
 };

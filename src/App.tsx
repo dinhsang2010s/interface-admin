@@ -5,9 +5,9 @@ import { Button, Layout, Menu } from "antd";
 import SearchModal from "./components/SearchModal";
 const { Header, Content, Sider } = Layout;
 import { useLocation } from "react-router-dom";
-import { useGetProfile } from "./hooks/useRequest";
 import LoadingPage from "./components/LoadingPage";
 import { useSleep } from "./hooks/useSleep";
+import { useGetProfile } from "./api/auth";
 
 const menu = [
   {
@@ -44,7 +44,7 @@ function App() {
         if (res.id) setAuth(true);
       });
 
-    useSleep(1 * 1000).then(() => setLoading(false));
+    useSleep(10).then(() => setLoading(false));
   }, []);
 
   return loading ? (
@@ -100,7 +100,11 @@ function App() {
               </Header>
               <Content
                 style={{
-                  padding: "5px 30px",
+                  background: "var(--bg-component)",
+                  boxShadow: "var(--box-shadow)",
+                  borderRadius: 6,
+                  margin: "0px 24px 16px",
+                  padding: 20,
                   overflow: "hidden",
                 }}
               >

@@ -1,77 +1,149 @@
 import "./style.less";
-import React, { useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
 import Table from "../../components/Table";
-import PageInit from "../../components/PageInit";
+import HeaderPage from "../../components/HeaderPage";
+import { Button, FormInstance, Popconfirm, Space, message } from "antd";
+import { useGetCategories } from "../../api/category";
+import { toLocalDate } from "../../utils/dateTime";
+import { FuncTable } from "../../components/FuncTable";
+import { useUpdateCategory } from "./add";
 
 interface DataType {
   key: string;
   name: string;
-  age: number;
-  address: string;
+  description: string;
+  status: number;
+  createdAt: string;
+  updatedAt: string;
 }
 
-const columns: ColumnsType<DataType> = [
-  {
-    key: "sort",
-  },
-  {
-    title: "Name",
-    dataIndex: "name",
-  },
-  {
-    title: "Age",
-    dataIndex: "age",
-  },
-  {
-    title: "Address",
-    dataIndex: "address",
-  },
-];
-
 export const Category = () => {
-  const [dataSource, setDataSource] = useState([
+  const [categories, setCategories] = useState<ICategory[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const formRef = useRef<FormInstance<any>>(null);
+
+  const [updateCategoryModal, showModalUpdateCategory] = useUpdateCategory();
+
+  const columns: ColumnsType<DataType> = [
     {
-      key: "1",
-      name: "John Brown",
-      age: 32,
-      address:
-        "Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text Long text",
+      key: "sort",
+      width: 10,
     },
     {
-      key: "2",
-      name: "Jim Green",
-      age: 42,
-      address: "London No. 1 Lake Park",
+      key: "name",
+      title: "Name",
+      dataIndex: "name",
+      sorter: () => -1,
     },
     {
-      key: "3",
-      name: "Joe Black",
-      age: 32,
-      address: "Sidney No. 1 Lake Park",
+      key: "createdAt",
+      title: "CreatedTime",
+      dataIndex: "createdAt",
+      render: (text: string) => <span>{toLocalDate(text)}</span>,
+      sorter: (a, b) =>
+        new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     },
-  ]);
+    {
+      key: "updatedAt",
+      title: "UpdatedTime",
+      dataIndex: "updatedAt",
+      render: (text: string) => <span>{toLocalDate(text)}</span>,
+    },
+    {
+      title: "Action",
+      key: "action",
+      width: 100,
+      align: "center",
+      fixed: "right",
+      render: (_, record) => (
+        <Space size="middle">
+          <FuncTable
+            icon="fa-solid fa-pen-to-square"
+            title="edit"
+            onClick={() => showModalUpdateCategory(record)}
+          />
+
+          <Popconfirm
+            title="Delete the task"
+            description="Are you sure to delete this task?"
+            //onConfirm={confirm}
+            //onCancel={cancel}
+            okText="Yes"
+            cancelText="No"
+          >
+            <FuncTable icon="fa-solid fa-trash-can" title="delete" />
+          </Popconfirm>
+        </Space>
+      ),
+    },
+  ];
+
+  const fetchCategories = () => {
+    setLoading(true);
+    useGetCategories()
+      .then((res) => {
+        setCategories(res);
+        setLoading(false);
+      })
+      .catch((err) => message.error(err?.message));
+  };
+
+  useEffect(() => {
+    fetchCategories();
+  }, []);
+
+  const onRefetchCategories = () => fetchCategories();
 
   const onSearchCategory = (value: string) => {
     console.log("cate", value);
   };
 
+  const onActionCategory = (category: unknown) => {
+    const cat = category as ICategory;
+    formRef.current?.setFieldsValue({
+      name: "sad",
+      description: "s",
+    });
+  };
+
   return (
-    <PageInit title="Category" onChangeValueSearch={onSearchCategory}>
+    <div className="category">
+      <div className="category-header">
+        <div className="category-header-filter flex">
+          <Button
+            type="primary"
+            icon={<i className="fa-solid fa-rotate"></i>}
+            loading={loading}
+            onClick={onRefetchCategories}
+          >
+            Refetch
+          </Button>
+        </div>
+
+        <HeaderPage
+          title="category"
+          onSearch={onSearchCategory}
+          onAdd={showModalUpdateCategory}
+          onRefetch={fetchCategories}
+        />
+      </div>
       <Table
         pagination={
-          dataSource.length > 20
+          categories.length > 20
             ? {
                 defaultPageSize: 20,
                 showSizeChanger: true,
                 pageSizeOptions: ["20", "50", "100"],
+                showQuickJumper: true,
               }
             : false
         }
         rowKey="key"
         columns={columns}
-        dataSource={dataSource}
+        dataSource={categories}
       />
-    </PageInit>
+      {updateCategoryModal}
+    </div>
   );
 };

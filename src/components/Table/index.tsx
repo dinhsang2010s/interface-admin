@@ -11,7 +11,7 @@ const Table = (props: TableProps<any>) => {
       {...props}
       ref={refHeight}
       scroll={{
-        y: height ? height - 140 : 500,
+        y: height ? height - 100 : 500,
         x: 500,
       }}
     />

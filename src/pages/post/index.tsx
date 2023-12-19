@@ -14,7 +14,8 @@ import { CSS } from "@dnd-kit/utilities";
 import React, { useState } from "react";
 import type { ColumnsType } from "antd/es/table";
 import Table from "../../components/Table";
-import PageInit from "../../components/PageInit";
+import HeaderPage from "../../components/HeaderPage";
+import { Form, Select, SelectProps, Space } from "antd";
 
 interface DataType {
   key: string;
@@ -99,6 +100,57 @@ for (let i = 1; i <= 21; i++) {
   });
 }
 
+const options: SelectProps["options"] = [
+  {
+    label: "China",
+    value: "china",
+    emoji: "🇨🇳",
+    desc: "China (中国)",
+  },
+  {
+    label: "USA",
+    value: "usa",
+    emoji: "🇺🇸",
+    desc: "USA (美国)",
+  },
+  {
+    label: "Japan",
+    value: "japan",
+    emoji: "🇯🇵",
+    desc: "Japan (日本)",
+  },
+  {
+    label: "Korea",
+    value: "korea",
+    emoji: "🇰🇷",
+    desc: "Korea (韩国)",
+  },
+  {
+    label: "Chisna",
+    value: "chiana",
+    emoji: "🇨🇳",
+    desc: "China (中国)",
+  },
+  {
+    label: "USdA",
+    value: "usasda",
+    emoji: "🇺🇸",
+    desc: "USA (美国)",
+  },
+  {
+    label: "Jadpan",
+    value: "japaaan",
+    emoji: "🇯🇵",
+    desc: "Japan (日本)",
+  },
+  {
+    label: "Kosarea",
+    value: "sds",
+    emoji: "🇰🇷",
+    desc: "Korea (韩国)",
+  },
+];
+
 export const Post = () => {
   const [dataSource, setDataSource] = useState(data);
 
@@ -117,24 +169,52 @@ export const Post = () => {
   };
 
   return (
-    <PageInit title="Post" onChangeValueSearch={onSearchPost}>
+    <div className="post">
+      <div className="post-header">
+        <div className="post-header-filter w-full flex">
+          <h4 className="title-filter">Filters:</h4>
+          <Form
+            className="form-filter w-full"
+            name="basic"
+            onFinish={() => {}}
+            autoComplete="off"
+          >
+            <Form.Item label="Categories" name="categories">
+              <Select
+                className="select-filter w-full"
+                mode="multiple"
+                placeholder="select one country"
+                onChange={() => {}}
+                optionLabelProp="label"
+                options={options}
+                optionRender={(option: any) => (
+                  <Space>
+                    <span role="img" aria-label={option.data.label}>
+                      {option.data.emoji}
+                    </span>
+                    {option.data.desc}
+                  </Space>
+                )}
+              />
+            </Form.Item>
+          </Form>
+        </div>
+        <HeaderPage title="post" onSearch={() => {}} />
+      </div>
       <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
         <SortableContext
           items={dataSource.map((i) => i.key)}
           strategy={verticalListSortingStrategy}
         >
           <Table
-            components={{
-              body: {
-                row: Row,
-              },
-            }}
+            components={{ body: { row: Row } }}
             pagination={
               dataSource.length > 20
                 ? {
                     defaultPageSize: 20,
                     showSizeChanger: true,
                     pageSizeOptions: ["20", "50", "100"],
+                    showQuickJumper: true,
                   }
                 : false
             }
@@ -144,6 +224,6 @@ export const Post = () => {
           />
         </SortableContext>
       </DndContext>
-    </PageInit>
+    </div>
   );
 };

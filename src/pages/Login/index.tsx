@@ -1,8 +1,8 @@
 import { useState } from "react";
-import { useLogin } from "../../hooks/useRequest";
 import "./style.less";
 import { Button, Form, Input, Typography, message } from "antd";
 import { useSleep } from "../../hooks/useSleep";
+import { useLogin } from "../../api/auth";
 const { Title } = Typography;
 
 const Login = () => {
@@ -11,15 +11,13 @@ const Login = () => {
   const onFinish = async (values: any) => {
     setLoading(true);
     useLogin(values)
-      .then((res: IToken) => {
+      .then((res) => {
         if (res) {
-          localStorage.setItem("token", res.accessToken);
+          localStorage.setItem("token", res?.accessToken);
           window.location.replace("/dashboard");
         }
 
-        useSleep(1 * 1000).then(() => {
-          setLoading(false);
-        });
+        useSleep(10).then(() => setLoading(false));
       })
       .catch((ex: any) => {
         message.error(ex.message);

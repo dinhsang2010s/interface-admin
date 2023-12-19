@@ -1,14 +1,14 @@
 import axios, { AxiosRequestConfig, Method } from "axios";
-
 interface IRequest {
   url: string;
   method: Method;
   body?: any;
+  params?: any;
 }
 
 export const useRequest = async <T,>(request: IRequest): Promise<T> => {
   try {
-    const { url, method, body } = request;
+    const { url, method, body, params } = request;
     const baseURL = `${import.meta.env.VITE_BASE_URL_DB}${url}`;
     const token = localStorage.getItem("token") ?? "";
     const config: AxiosRequestConfig = {
@@ -22,28 +22,62 @@ export const useRequest = async <T,>(request: IRequest): Promise<T> => {
       },
     };
 
+    if (params) config.params = { catID: 1 };
     if (body) config.data = body;
 
-    return (await axios.request(config)).data;
+    return (await axios.request(config))?.data ?? null;
   } catch (error: any) {
     const { data, statusText } = error.response;
-    throw {
-      message: data.message ?? statusText,
-    };
+    throw { message: data.message ?? statusText };
   }
 };
 
-export const useGetProfile = async (): Promise<object> => {
-  return useRequest<object>({
-    url: "users/profile",
+export const getPagination = async <T,>({
+  url,
+  params,
+}: {
+  url: string;
+  params?: Record<string, string | number>;
+}): Promise<IPagination<T>> => {
+  return await useRequest<IPagination<T>>({
+    url: url,
+    method: "GET",
+    params: {
+      ...params,
+      offset: 0,
+      pageSize: 20,
+      orderBy: "",
+      q: "",
+    },
+  });
+};
+
+export const getAll = async <T,>({ url }: { url: string }): Promise<T> => {
+  return await useRequest<T>({
+    url,
     method: "GET",
   });
 };
 
-export const useLogin = async (dto: LoginDto): Promise<IToken> => {
-  return useRequest<IToken>({
-    url: "auth/login",
-    method: "POST",
-    body: dto,
+export const update = async <T, M>({
+  url,
+  method,
+  body,
+  params,
+}: {
+  url: string;
+  method?: Method;
+  body: M;
+  params?: Record<string, string | number>;
+}): Promise<T> => {
+  return await useRequest<T>({
+    url,
+    method: method || "POST",
+    body,
+    params: { ...params },
   });
+};
+
+export const del = async ({ url }: { url: string }): Promise<void> => {
+  await useRequest({ url, method: "DELETE" });
 };

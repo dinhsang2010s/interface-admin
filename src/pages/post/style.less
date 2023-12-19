@@ -1,13 +1,32 @@
-// .post {
-//   background: var(--bg-component);
-//   padding: 20px 20px 0px;
-//   border-radius: 6px;
-//   &-nav {
-//     justify-content: space-between;
-//     .nav-function {
-//       button {
-//         margin-left: 20px;
-//       }
-//     }
-//   }
-// }
+.post {
+  &-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+    &-filter {
+      display: flex;
+      align-items: center;
+      margin-right: 30px;
+      .title-filter {
+        margin-right: 10px;
+        color: var(--text-color-header);
+      }
+      .form-filter {
+        display: flex;
+        align-items: center;
+        .ant-form-item {
+          width: 100%;
+          margin-bottom: 0;
+          margin-right: 12px;
+          .ant-form-item-label label {
+            color: var(--text-color-header);
+          }
+        }
+      }
+    }
+  }
+}
+
+@media only screen and (max-width: 900px) {
+}
