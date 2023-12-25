@@ -1,3 +1,3 @@
-export * from "./category";
-export * from "./dashboard";
-export * from "./post";
+export * from "./Category";
+export * from "./Dashboard";
+export * from "./Post";

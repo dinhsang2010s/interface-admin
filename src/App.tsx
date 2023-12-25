@@ -16,17 +16,17 @@ const menu = [
     label: "Dashboard",
   },
   {
-    key: "category",
+    key: "categories",
     icon: <i className="fa-solid fa-table-list"></i>,
     label: "Categories",
   },
   {
-    key: "post",
+    key: "posts",
     icon: <i className="fa-solid fa-newspaper"></i>,
     label: "Posts",
   },
   {
-    key: "user",
+    key: "users",
     icon: <i className="fa-solid fa-users-gear"></i>,
     label: "Users",
   },

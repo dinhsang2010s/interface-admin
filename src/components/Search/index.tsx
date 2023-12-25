@@ -1,32 +1,29 @@
-import { Input } from "antd";
+import { Input, InputProps } from "antd";
 import "./style.less";
-import { CSSProperties, useState } from "react";
+import { useState } from "react";
 import React from "react";
 import { debounce } from "lodash";
+import { LoadingOutlined } from "@ant-design/icons";
 
-interface Props {
-  className?: string;
-  width?: number | string;
-  height?: number | string;
-  placeholder?: string;
-  style?: CSSProperties | undefined;
-  onChange: (value: string) => void;
+interface Props extends InputProps {
+  onChangeInput?: (value: string) => void;
+  loading?: boolean;
 }
 
 const Search = (props: Props) => {
   const [value, setValue] = useState<string>("");
 
   const onChange = (value: string) => {
-    props.onChange(value);
+    if (props.onChangeInput) props.onChangeInput(value);
   };
 
   const debounced = React.useCallback(debounce(onChange, 500), []);
 
   return (
     <Input
+      {...props}
       className={`search-input ${props.className}`}
-      style={props.style}
-      prefix={<i className="fa fa-search"></i>}
+      suffix={props.loading ? <LoadingOutlined spin /> : ""}
       placeholder={props.placeholder ?? "Search..."}
       value={value}
       onChange={(e) => {

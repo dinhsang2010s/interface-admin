@@ -22,13 +22,17 @@ export const useRequest = async <T,>(request: IRequest): Promise<T> => {
       },
     };
 
-    if (params) config.params = { catID: 1 };
+    if (params) config.params = params;
     if (body) config.data = body;
 
     return (await axios.request(config))?.data ?? null;
   } catch (error: any) {
-    const { data, statusText } = error.response;
-    throw { message: data.message ?? statusText };
+    let message: "";
+    if (error.response)
+      message = error?.response.data.message ?? error?.response.statusText;
+    else message = error.message;
+
+    throw { message };
   }
 };
 

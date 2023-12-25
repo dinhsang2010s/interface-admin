@@ -1,4 +1,4 @@
-import { Table as TableAntd, TableProps } from "antd";
+import { Table as TableAnt, TableProps } from "antd";
 import { useRef } from "react";
 import useComputeHeight from "../../hooks/useHeight";
 
@@ -7,14 +7,15 @@ const Table = (props: TableProps<any>) => {
   const height = useComputeHeight(refHeight);
 
   return (
-    <TableAntd
-      {...props}
-      ref={refHeight}
-      scroll={{
-        y: height ? height - 100 : 500,
-        x: 500,
-      }}
-    />
+    <div ref={refHeight}>
+      <TableAnt
+        {...props}
+        scroll={{
+          y: height ? height - 135 : 500,
+          x: 500,
+        }}
+      />
+    </div>
   );
 };
 

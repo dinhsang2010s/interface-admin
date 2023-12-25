@@ -3,7 +3,7 @@ export default function useComputeHeight(
   el?: React.RefObject<HTMLElement>,
   deps: any[] = []
 ) {
-  const [height, setHeight] = useState(500);
+  const [height, setHeight] = useState<number>(0);
 
   useEffect(() => {
     const computeContainerHeight = () => {
@@ -15,8 +15,8 @@ export default function useComputeHeight(
 
         const rect = el.current.getBoundingClientRect();
         const y = rect.top;
-        const height = viewPortHeight - y;
-        setHeight(height);
+        const h = viewPortHeight - y;
+        setHeight(h);
       }
     };
 

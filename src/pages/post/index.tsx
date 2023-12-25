@@ -1,229 +1,204 @@
 import "./style.less";
-import { MenuOutlined } from "@ant-design/icons";
-import type { DragEndEvent } from "@dnd-kit/core";
-import { DndContext } from "@dnd-kit/core";
-import { restrictToVerticalAxis } from "@dnd-kit/modifiers";
-
-import {
-  arrayMove,
-  SortableContext,
-  useSortable,
-  verticalListSortingStrategy,
-} from "@dnd-kit/sortable";
-import { CSS } from "@dnd-kit/utilities";
-import React, { useState } from "react";
-import type { ColumnsType } from "antd/es/table";
+import React, { useEffect, useRef, useState } from "react";
 import Table from "../../components/Table";
-import HeaderPage from "../../components/HeaderPage";
-import { Form, Select, SelectProps, Space } from "antd";
-
-interface DataType {
-  key: string;
-  name: string;
-  age: number;
-  address: string;
-}
-
-const columns: ColumnsType<DataType> = [
-  {
-    key: "sort",
-    width: "50px",
-  },
-  {
-    key: "name",
-    title: "Name",
-    dataIndex: "name",
-  },
-  {
-    key: "age",
-    title: "Age",
-    dataIndex: "age",
-  },
-  {
-    key: "address",
-    title: "Address",
-    dataIndex: "address",
-  },
-];
-
-interface RowProps extends React.HTMLAttributes<HTMLTableRowElement> {
-  "data-row-key": string;
-}
-
-const Row = ({ children, ...props }: RowProps) => {
-  const {
-    attributes,
-    listeners,
-    setNodeRef,
-    setActivatorNodeRef,
-    transform,
-    transition,
-    isDragging,
-  } = useSortable({
-    id: props["data-row-key"],
-  });
-
-  const style: React.CSSProperties = {
-    ...props.style,
-    transform: CSS.Transform.toString(transform && { ...transform, scaleY: 1 }),
-    transition,
-    ...(isDragging ? { position: "relative", zIndex: 9999 } : {}),
-  };
-
-  return (
-    <tr {...props} ref={setNodeRef} style={style} {...attributes}>
-      {React.Children.map(children, (child) => {
-        if ((child as React.ReactElement).key === "sort") {
-          return React.cloneElement(child as React.ReactElement, {
-            children: (
-              <MenuOutlined
-                ref={setActivatorNodeRef}
-                style={{ touchAction: "none", cursor: "move" }}
-                {...listeners}
-              />
-            ),
-          });
-        }
-        return child;
-      })}
-    </tr>
-  );
-};
-
-const data: DataType[] = [];
-for (let i = 1; i <= 21; i++) {
-  data.push({
-    key: `${i}`,
-    name: `Edward ${i}`,
-    age: i,
-    address: `London Park no. ${i}`,
-  });
-}
-
-const options: SelectProps["options"] = [
-  {
-    label: "China",
-    value: "china",
-    emoji: "🇨🇳",
-    desc: "China (中国)",
-  },
-  {
-    label: "USA",
-    value: "usa",
-    emoji: "🇺🇸",
-    desc: "USA (美国)",
-  },
-  {
-    label: "Japan",
-    value: "japan",
-    emoji: "🇯🇵",
-    desc: "Japan (日本)",
-  },
-  {
-    label: "Korea",
-    value: "korea",
-    emoji: "🇰🇷",
-    desc: "Korea (韩国)",
-  },
-  {
-    label: "Chisna",
-    value: "chiana",
-    emoji: "🇨🇳",
-    desc: "China (中国)",
-  },
-  {
-    label: "USdA",
-    value: "usasda",
-    emoji: "🇺🇸",
-    desc: "USA (美国)",
-  },
-  {
-    label: "Jadpan",
-    value: "japaaan",
-    emoji: "🇯🇵",
-    desc: "Japan (日本)",
-  },
-  {
-    label: "Kosarea",
-    value: "sds",
-    emoji: "🇰🇷",
-    desc: "Korea (韩国)",
-  },
-];
+import {
+  Avatar,
+  Button,
+  Dropdown,
+  Input,
+  List,
+  Menu,
+  Pagination,
+  message,
+} from "antd";
+import { LoadingOutlined } from "@ant-design/icons";
+import { useUpdateCategory } from "./useUpdate";
+import { debounce } from "lodash";
+import InfiniteScroll from "react-infinite-scroll-component";
+import { DeletePost, useGetPosts } from "../../api/post";
+import useComputeHeight from "../../hooks/useHeight";
 
 export const Post = () => {
-  const [dataSource, setDataSource] = useState(data);
+  const refHeight = useRef(null);
+  const height = useComputeHeight(refHeight);
+  const [posts, setPosts] = useState<IPost[]>([]);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [updateCategoryModal, showModalUpdateCategory] = useUpdateCategory();
+  const [options, setOptions] = useState<IPost[]>([]);
+  const [value, setValue] = useState<string>("");
+  const [query, setQuery] = useState<QueryDto>({
+    offset: 0,
+    pageSize: 20,
+    orderBy: "",
+    q: "",
+  });
 
-  const onDragEnd = ({ active, over }: DragEndEvent) => {
-    if (active.id !== over?.id) {
-      setDataSource((previous) => {
-        const activeIndex = previous.findIndex((i) => i.key === active.id);
-        const overIndex = previous.findIndex((i) => i.key === over?.id);
-        return arrayMove(previous, activeIndex, overIndex);
-      });
+  const refetch = () => {
+    useGetPosts({ ...query })
+      .then((res) => setPosts(res))
+      .catch((err) => message.error(err?.message));
+  };
+
+  useEffect(() => {
+    refetch();
+  }, []);
+
+  const onRefetch = () => {
+    setLoading(true);
+    refetch();
+    setLoading(false);
+    setValue("");
+  };
+
+  const debouncedSearch = debounce((value) => {
+    useGetPosts({ ...query, q: value })
+      .then((res) => setOptions(res))
+      .catch((err) => message.error(err?.message));
+  }, 500);
+
+  const onSearchPost = (e: any) => {
+    setValue(e.target.value);
+    if (e.target.value) {
+      setLoading(true);
+      debouncedSearch(e.target.value);
+    } else {
+      setLoading(false);
+      refetch();
     }
   };
 
-  const onSearchPost = (value: string) => {
-    console.log("asdasd", value);
+  const onDeletePost = async (id: string) => {
+    await DeletePost(id);
+    onRefetch();
   };
+
+  const onSelectSearch = (post: IPost) => {
+    setPosts([{ ...post }]);
+    setLoading(false);
+  };
+
+  const data = [
+    {
+      title: "Ant Design Title 1",
+    },
+    {
+      title: "Ant Design Title 2",
+    },
+    {
+      title: "Ant Design Title 3",
+    },
+    {
+      title: "Ant Design Title 4",
+    },
+    {
+      title: "Ant Design Title 1",
+    },
+    {
+      title: "Ant Design Title 2",
+    },
+    {
+      title: "Ant Design Title 3",
+    },
+    {
+      title: "Ant Design Title 4",
+    },
+    {
+      title: "Ant Design Title 1",
+    },
+    {
+      title: "Ant Design Title 2",
+    },
+    {
+      title: "Ant Design Title 3",
+    },
+    {
+      title: "Ant Design Title 4",
+    },
+  ];
 
   return (
     <div className="post">
       <div className="post-header">
-        <div className="post-header-filter w-full flex">
-          <h4 className="title-filter">Filters:</h4>
-          <Form
-            className="form-filter w-full"
-            name="basic"
-            onFinish={() => {}}
-            autoComplete="off"
+        <div className="flex-center">
+          <Button
+            icon={<i className="fa-solid fa-rotate"></i>}
+            onClick={onRefetch}
           >
-            <Form.Item label="Categories" name="categories">
-              <Select
-                className="select-filter w-full"
-                mode="multiple"
-                placeholder="select one country"
-                onChange={() => {}}
-                optionLabelProp="label"
-                options={options}
-                optionRender={(option: any) => (
-                  <Space>
-                    <span role="img" aria-label={option.data.label}>
-                      {option.data.emoji}
-                    </span>
-                    {option.data.desc}
-                  </Space>
-                )}
-              />
-            </Form.Item>
-          </Form>
-        </div>
-        <HeaderPage title="post" onSearch={() => {}} />
-      </div>
-      <DndContext modifiers={[restrictToVerticalAxis]} onDragEnd={onDragEnd}>
-        <SortableContext
-          items={dataSource.map((i) => i.key)}
-          strategy={verticalListSortingStrategy}
-        >
-          <Table
-            components={{ body: { row: Row } }}
-            pagination={
-              dataSource.length > 20
-                ? {
-                    defaultPageSize: 20,
-                    showSizeChanger: true,
-                    pageSizeOptions: ["20", "50", "100"],
-                    showQuickJumper: true,
-                  }
-                : false
+            Refetch
+          </Button>
+          <Dropdown
+            open={loading}
+            overlay={
+              <Menu>
+                {options.map((option) => (
+                  <Menu.Item
+                    onClick={() => onSelectSearch(option)}
+                    key={option.id}
+                  >
+                    {option.title?.slice(0, 100)}
+                  </Menu.Item>
+                ))}
+              </Menu>
             }
-            rowKey="key"
-            columns={columns}
-            dataSource={dataSource}
-          />
-        </SortableContext>
-      </DndContext>
+          >
+            <Input
+              value={value}
+              onChange={onSearchPost}
+              style={{ width: 250, marginLeft: 12 }}
+              placeholder="Search to post..."
+              suffix={
+                loading ? (
+                  <LoadingOutlined spin />
+                ) : (
+                  <i className="fa fa-search"></i>
+                )
+              }
+            />
+          </Dropdown>
+        </div>
+        <Button
+          type="primary"
+          icon={<i className="fa-solid fa-plus"></i>}
+          onClick={() => showModalUpdateCategory(undefined, refetch)}
+        >
+          Add
+        </Button>
+      </div>
+      <div ref={refHeight} style={{ overflow: "auto", height: height - 70 }}>
+        <List
+          dataSource={data}
+          renderItem={(item, index) => (
+            <List.Item>
+              <List.Item.Meta
+                avatar={
+                  <Avatar
+                    src={`https://xsgames.co/randomusers/avatar.php?g=pixel&key=${index}`}
+                  />
+                }
+                title={<a href="https://ant.design">{item.title}</a>}
+                description="Ant Design, a design language for background applications, is refined by Ant UED Team"
+              />
+            </List.Item>
+          )}
+        />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "end",
+          marginTop: 10,
+        }}
+      >
+        <Pagination
+          showQuickJumper
+          total={200}
+          pageSize={20}
+          showSizeChanger={true}
+          pageSizeOptions={["20", "50", "100"]}
+        />
+      </div>
+      {updateCategoryModal}
     </div>
   );
 };

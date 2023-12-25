@@ -1,7 +1,7 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
 import { Category, Dashboard, Post } from "./pages";
-import Login from "./pages/login";
+import Login from "./pages/Login";
 
 export const Router = createBrowserRouter([
   {
@@ -13,15 +13,15 @@ export const Router = createBrowserRouter([
         element: <Dashboard />,
       },
       {
-        path: "category",
+        path: "categories",
         element: <Category />,
       },
       {
-        path: "post",
+        path: "posts",
         element: <Post />,
       },
       {
-        path: "user",
+        path: "users",
         element: <div>dsadas</div>,
       },
     ],

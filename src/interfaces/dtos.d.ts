@@ -10,3 +10,17 @@ interface QueryDto {
   orderBy: string;
   q: string;
 }
+
+interface CategoryDto {
+  name: string;
+}
+
+interface PostDto {
+  title: string;
+  description: string;
+  content: string;
+  categoryId: string;
+  imageTopic: string;
+  keyWordSeo: string;
+  descriptionSeo: string;
+}
