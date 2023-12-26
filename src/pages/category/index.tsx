@@ -4,12 +4,11 @@ import type { ColumnsType } from "antd/es/table";
 import Table from "../../components/Table";
 import {
   Button,
-  Dropdown,
   Input,
-  Menu,
+  Pagination,
   Popconfirm,
-  Select,
   Space,
+  Tag,
   message,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
@@ -22,7 +21,7 @@ import { debounce } from "lodash";
 interface DataType {
   key: string;
   name: string;
-  description: string;
+  user: string[];
   createdAt: string;
   updatedAt: string;
 }
@@ -31,8 +30,8 @@ export const Category = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
   const [updateCategoryModal, showModalUpdateCategory] = useUpdateCategory();
-  const [options, setOptions] = useState<ICategory[]>([]);
   const [value, setValue] = useState<string>("");
+
   const columns: ColumnsType<DataType> = [
     {
       key: "name",
@@ -57,6 +56,29 @@ export const Category = () => {
             }}
           />
           <span>{record?.name}</span>
+        </div>
+      ),
+    },
+    {
+      title: "User",
+      key: "user",
+      dataIndex: "user",
+      render: (_, record: any) => (
+        <div className="flex">
+          {record?.createdBy ? (
+            <Tag color="var(--theme-primary)" key={record?.createdBy}>
+              {record?.createdBy}
+            </Tag>
+          ) : (
+            ""
+          )}
+          {record?.updatedBy ? (
+            <Tag color="#008000" key={record?.updatedBy}>
+              {record?.updatedBy}
+            </Tag>
+          ) : (
+            ""
+          )}
         </div>
       ),
     },
@@ -126,7 +148,7 @@ export const Category = () => {
 
   const debouncedSearch = debounce((value) => {
     useGetCategories(value)
-      .then((res) => setOptions(res))
+      .then((res) => setCategories(res))
       .catch((err) => message.error(err?.message));
   }, 500);
 
@@ -146,50 +168,33 @@ export const Category = () => {
     onRefetch();
   };
 
-  const onSelectSearch = (category: ICategory) => {
-    setCategories([{ ...category }]);
-    setLoading(false);
-  };
-
   return (
     <div className="category">
       <div className="category-header">
         <div className="flex-center">
+          <div style={{ marginRight: 12, fontWeight: 600 }}>
+            Total: {categories?.length}
+          </div>
           <Button
+            style={{ marginRight: 12 }}
             icon={<i className="fa-solid fa-rotate"></i>}
             onClick={onRefetch}
           >
             Refetch
           </Button>
-          <Dropdown
-            open={loading}
-            overlay={
-              <Menu>
-                {options.map((option) => (
-                  <Menu.Item
-                    onClick={() => onSelectSearch(option)}
-                    key={option.id}
-                  >
-                    {option.name}
-                  </Menu.Item>
-                ))}
-              </Menu>
+          <Input
+            value={value}
+            onChange={onSearchCategory}
+            style={{ width: 250, marginRight: 12 }}
+            placeholder="Search to category..."
+            suffix={
+              loading ? (
+                <LoadingOutlined spin />
+              ) : (
+                <i className="fa fa-search"></i>
+              )
             }
-          >
-            <Input
-              value={value}
-              onChange={onSearchCategory}
-              style={{ width: 250, margin: "0px 12px" }}
-              placeholder="Search to category..."
-              suffix={
-                loading ? (
-                  <LoadingOutlined spin />
-                ) : (
-                  <i className="fa fa-search"></i>
-                )
-              }
-            />
-          </Dropdown>
+          />
         </div>
         <Button
           type="primary"
@@ -200,20 +205,31 @@ export const Category = () => {
         </Button>
       </div>
       <Table
-        pagination={
-          categories.length > 10
-            ? {
-                pageSize: 20,
-                showSizeChanger: true,
-                pageSizeOptions: ["20", "50", "100"],
-                showQuickJumper: true,
-              }
-            : false
-        }
         rowKey="key"
+        pagination={false}
         columns={columns}
         dataSource={categories}
       />
+      {categories && categories.length > 19 ? (
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            justifyContent: "end",
+            marginTop: 10,
+          }}
+        >
+          <Pagination
+            showQuickJumper
+            total={categories?.length}
+            pageSize={20}
+            showSizeChanger={true}
+            pageSizeOptions={["20", "50", "100"]}
+          />
+        </div>
+      ) : (
+        ""
+      )}
       {updateCategoryModal}
     </div>
   );

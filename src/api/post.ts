@@ -1,11 +1,18 @@
-import { useRequest } from "../hooks/useRequest";
+import { getPagination, useRequest } from "../hooks/useRequest";
 
-export const useGetPosts = async (query: QueryDto): Promise<IPost[]> => {
-  return await useRequest<IPost[]>({
+export const useGetPosts = async (
+  query: QueryDto
+): Promise<IPagination<IPost[]>> => {
+  return await getPagination<IPost[]>({
     url: "posts",
-    method: "GET",
     params: { ...query },
   });
+
+  // return await useRequest<IPost[]>({
+  //   url: "posts",
+  //   method: "GET",
+  //   params: { ...query },
+  // });
 };
 
 export const AddPost = async (post: PostDto): Promise<IPost> => {

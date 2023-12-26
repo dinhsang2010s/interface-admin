@@ -46,13 +46,7 @@ export const getPagination = async <T,>({
   return await useRequest<IPagination<T>>({
     url: url,
     method: "GET",
-    params: {
-      ...params,
-      offset: 0,
-      pageSize: 20,
-      orderBy: "",
-      q: "",
-    },
+    params,
   });
 };
 

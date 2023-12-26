@@ -11,7 +11,7 @@ const Table = (props: TableProps<any>) => {
       <TableAnt
         {...props}
         scroll={{
-          y: height ? height - 135 : 500,
+          y: height ? height - 125 : 500,
           x: 500,
         }}
       />

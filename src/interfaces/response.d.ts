@@ -8,6 +8,6 @@ interface BaseModel {
 }
 
 interface IPagination<T> {
-  data: T[];
+  data: T;
   total: number;
 }
