@@ -1,24 +1,26 @@
-import { Form, Input, Modal, Select, message } from "antd";
+import { Button, Form, Input, Modal, Select, message } from "antd";
 import { useForm } from "antd/es/form/Form";
 import React, { useCallback } from "react";
-import { AddCategory, UpdateCategory } from "../../api/category";
+import { AddPost, UpdatePost } from "../../api/post";
 
-export const useUpdateCategory = (): [
+export const useUpdatePost = (): [
   React.ReactElement,
-  (category?: ICategory, refetch?: () => void) => void
+  (post?: IPost, refetch?: () => void) => void
 ] => {
   const [api, element] = Modal.useModal();
   const [form] = useForm();
 
-  const onOk = async (category: ICategory, refetch?: () => void) => {
+  const onOk = async (post: IPost, refetch?: () => void) => {
     try {
+      await form.submit();
+
       const model = form.getFieldsValue();
 
-      if (category?.id) await UpdateCategory(category?.id, { ...model });
-      else await AddCategory({ ...model });
+      if (post?.id) await UpdatePost(post?.id, { ...model });
+      else await AddPost({ ...model });
 
       message.success(
-        `Your ${category?.id ? "update" : "add"}  have been successfully saved!`
+        `Your ${post?.id ? "update" : "add"}  have been successfully saved!`
       );
 
       if (refetch) refetch();
@@ -30,37 +32,76 @@ export const useUpdateCategory = (): [
   };
 
   const show = useCallback(
-    (category?: any, refetch?: () => void) => {
-      if (category?.id) form.setFieldsValue({ name: category.name });
+    (post?: any, refetch?: () => void) => {
+      if (post?.id) form.setFieldsValue({ ...post });
 
       api.info({
         closable: true,
         maskClosable: true,
-        onOk: () => onOk(category, refetch),
+        onOk: () => onOk(post, refetch),
         icon: (
           <div style={{ marginRight: 5 }}>
             <i className="fa-solid fa-edit"></i>
           </div>
         ),
-        title: category?.id ? "Update Category" : "Add Category",
+        title: post?.id ? "Update Post" : "Add Post",
         content: (
           <Form form={form} style={{ marginRight: 10 }} layout="vertical">
-            <Form.Item label="Name" name="name" required>
+            <Form.Item label="Title" name="title" rules={[{ required: true }]}>
               <Input />
             </Form.Item>
-            {category?.id ? (
-              <Form.Item label="Status" name="status">
-                <Select
-                  defaultValue={category?.status}
-                  options={[
-                    { label: "Active", value: 1 },
-                    { label: "Suspend", value: 0 },
-                  ]}
-                />
-              </Form.Item>
-            ) : (
-              ""
-            )}
+            <Form.Item label="Description" name="description">
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="Content"
+              name="content"
+              rules={[{ required: true }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="CategoryID"
+              name="categoryId"
+              rules={[{ required: true }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="ImageTopic"
+              name="imageTopic"
+              rules={[{ required: true }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="KeyWordSeo"
+              name="keyWordSeo"
+              rules={[{ required: true }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item
+              label="DescriptionSeo"
+              name="descriptionSeo"
+              rules={[{ required: true }]}
+            >
+              <Input />
+            </Form.Item>
+            <Form.Item label="Status" name="status">
+              <Select
+                defaultValue={post?.status ?? 1}
+                options={[
+                  { label: "Active", value: 1 },
+                  { label: "Suspend", value: 0 },
+                ]}
+              />
+            </Form.Item>
+            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
+              <Button type="primary" htmlType="submit">
+                Submit
+              </Button>
+            </Form.Item>
           </Form>
         ),
       });

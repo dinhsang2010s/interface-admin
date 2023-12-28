@@ -1,19 +1,28 @@
 import "./style.less";
 import React, { useEffect, useRef, useState } from "react";
-import { Avatar, Button, Input, List, Pagination, Tag, message } from "antd";
+import {
+  Button,
+  Input,
+  Pagination,
+  Popconfirm,
+  Space,
+  Tag,
+  message,
+} from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { useUpdateCategory } from "./useUpdate";
 import { debounce } from "lodash";
 import { DeletePost, useGetPosts } from "../../api/post";
 import useComputeHeight from "../../hooks/useHeight";
 import { toLocalDate } from "../../utils/dateTime";
+import { FuncTable } from "../../components/FuncTable";
+import UpdatePostModal from "./update";
 
 export const Post = () => {
   const refHeight = useRef(null);
   const height = useComputeHeight(refHeight);
   const [posts, setPosts] = useState<IPagination<IPost[]>>();
   const [loading, setLoading] = useState<boolean>(false);
-  const [updateCategoryModal, showModalUpdateCategory] = useUpdateCategory();
+  const [open, setOpen] = useState<boolean>(false);
   const [value, setValue] = useState<string>("");
   const [query, setQuery] = useState<QueryDto>({
     offset: 0,
@@ -92,62 +101,135 @@ export const Post = () => {
         <Button
           type="primary"
           icon={<i className="fa-solid fa-plus"></i>}
-          onClick={() => showModalUpdateCategory(undefined, refetch)}
+          //onClick={() => showModalUpdatePost(undefined, refetch)}
         >
           Add
         </Button>
       </div>
       <div ref={refHeight} style={{ overflow: "auto", height: height - 70 }}>
-        <List
-          dataSource={posts?.data}
-          renderItem={(item, index) => (
-            <List.Item>
-              <div className="flex w-full">
+        <ul>
+          {posts?.data?.map((post) => (
+            <li className="post-item">
+              <div style={{ display: "flex" }}>
                 <div
                   className="image-topic"
                   style={{
-                    width: 80,
-                    height: 80,
-                    backgroundImage: `url(${item.imageTopic})`,
+                    flexShrink: 1,
+                    width: 85,
+                    minWidth: 85,
+                    height: 70,
+                    backgroundImage: `url(${post.imageTopic})`,
                     backgroundSize: "cover",
                     backgroundPosition: "center",
                     borderRadius: 5,
                     marginRight: 12,
                   }}
-                ></div>
+                />
                 <div
-                  className="content w-full"
-                  style={{ display: "flex", flexDirection: "column" }}
+                  style={{
+                    textOverflow: "ellipsis",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    width: "100%",
+                  }}
                 >
-                  <h3 className="w-full">{item?.title}</h3>
-                  <span className="w-full">{item?.description}</span>
-                  <div className="post-info flex" style={{ marginTop: 10 }}>
-                    <div className="flex" style={{ marginRight: 12 }}>
-                      {item.createdBy ? (
-                        <Tag color="var(--theme-primary)">{item.createdBy}</Tag>
+                  <div
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      marginBottom: 5,
+                    }}
+                  >
+                    <Tag color="#db5cb5">{post.categoryName}</Tag>
+                    <div
+                      style={{
+                        marginRight: 5,
+                        width: 10,
+                        height: 10,
+                        borderRadius: "50%",
+                        background: post.status === 1 ? "green" : "red",
+                      }}
+                    />
+                    <h3
+                      style={{
+                        textOverflow: "ellipsis",
+                        whiteSpace: "nowrap",
+                        overflow: "hidden",
+                      }}
+                    >
+                      {post?.title}
+                    </h3>
+                  </div>
+                  <span>{post?.description}</span>
+                  <div
+                    className="post-info"
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      marginTop: 5,
+                    }}
+                  >
+                    <div className="post-info-left flex">
+                      {post.createdBy ? (
+                        <div
+                          className="flex"
+                          style={{ marginRight: 12, alignItems: "center" }}
+                        >
+                          <Tag color="var(--theme-primary)">
+                            {post.createdBy}
+                          </Tag>
+                          <span style={{ color: "var(--theme-primary)" }}>
+                            {toLocalDate(post.createdAt)}
+                          </span>
+                        </div>
                       ) : (
                         ""
                       )}
-                      <span style={{ color: "var(--theme-primary)" }}>
-                        {toLocalDate(item.createdAt)}
-                      </span>
+                      {post.updatedBy ? (
+                        <div
+                          className="flex"
+                          style={{ marginRight: 12, alignItems: "center" }}
+                        >
+                          <Tag color="#008000">{post.updatedBy}</Tag>
+                          <span style={{ color: "#008000" }}>
+                            {toLocalDate(post.updatedAt)}
+                          </span>
+                        </div>
+                      ) : (
+                        ""
+                      )}
                     </div>
-                    <div className="flex" style={{ marginRight: 12 }}>
-                      {item.updatedBy ? (
-                        <Tag color="#008000">{item.updatedBy}</Tag>
-                      ) : (
-                        ""
-                      )}
-                      <span style={{ color: "#008000" }}>
-                        {toLocalDate(item.updatedAt)}
-                      </span>
+                    <div className="post-info-right flex">
+                      <Space size="middle">
+                        <FuncTable
+                          title="edit"
+                          //onClick={() => showModalUpdatePost(post, refetch)}
+                        />
+                        <Popconfirm
+                          title="Are you sure to delete this category?"
+                          description={`Delete the [ ${post.title.slice(
+                            0,
+                            50
+                          )}... ]`}
+                          placement="leftTop"
+                          onConfirm={() => onDeletePost(post.id)}
+                          okText="Yes"
+                          cancelText="No"
+                        >
+                          <FuncTable
+                            icon="fa-solid fa-trash-can"
+                            title="delete"
+                          />
+                        </Popconfirm>
+                      </Space>
                     </div>
                   </div>
                 </div>
               </div>
-            </List.Item>
-          )}
-        />
+            </li>
+          ))}
+        </ul>
       </div>
       {posts?.data && posts.data.length > 19 ? (
         <div
@@ -169,7 +251,7 @@ export const Post = () => {
       ) : (
         ""
       )}
-      {updateCategoryModal}
+      <UpdatePostModal open={open} refetch={refetch} />
     </div>
   );
 };

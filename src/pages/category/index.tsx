@@ -15,13 +15,13 @@ import { LoadingOutlined } from "@ant-design/icons";
 import { DeleteCategory, useGetCategories } from "../../api/category";
 import { toLocalDate } from "../../utils/dateTime";
 import { FuncTable } from "../../components/FuncTable";
-import { useUpdateCategory } from "./useUpdate";
 import { debounce } from "lodash";
+import { useUpdateCategoryModal } from "./useUpdateModal";
 
 interface DataType {
   key: string;
   name: string;
-  user: string[];
+  status: number;
   createdAt: string;
   updatedAt: string;
 }
@@ -29,7 +29,7 @@ interface DataType {
 export const Category = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [updateCategoryModal, showModalUpdateCategory] = useUpdateCategory();
+  const [element, show] = useUpdateCategoryModal();
   const [value, setValue] = useState<string>("");
 
   const columns: ColumnsType<DataType> = [
@@ -49,8 +49,8 @@ export const Category = () => {
           <div
             style={{
               marginRight: 10,
-              width: 12,
-              height: 12,
+              width: 10,
+              height: 10,
               borderRadius: "50%",
               background: record?.status === 1 ? "green" : "red",
             }}
@@ -59,29 +59,29 @@ export const Category = () => {
         </div>
       ),
     },
-    {
-      title: "User",
-      key: "user",
-      dataIndex: "user",
-      render: (_, record: any) => (
-        <div className="flex">
-          {record?.createdBy ? (
-            <Tag color="var(--theme-primary)" key={record?.createdBy}>
-              {record?.createdBy}
-            </Tag>
-          ) : (
-            ""
-          )}
-          {record?.updatedBy ? (
-            <Tag color="#008000" key={record?.updatedBy}>
-              {record?.updatedBy}
-            </Tag>
-          ) : (
-            ""
-          )}
-        </div>
-      ),
-    },
+    // {
+    //   title: "User",
+    //   key: "user",
+    //   dataIndex: "user",
+    //   render: (_, record: any) => (
+    //     <div className="flex">
+    //       {record?.createdBy ? (
+    //         <Tag color="var(--theme-primary)" key={record?.createdBy}>
+    //           {record?.createdBy}
+    //         </Tag>
+    //       ) : (
+    //         ""
+    //       )}
+    //       {record?.updatedBy ? (
+    //         <Tag color="#008000" key={record?.updatedBy}>
+    //           {record?.updatedBy}
+    //         </Tag>
+    //       ) : (
+    //         ""
+    //       )}
+    //     </div>
+    //   ),
+    // },
     {
       key: "createdAt",
       title: "CreatedTime",
@@ -108,21 +108,16 @@ export const Category = () => {
       fixed: "right",
       render: (_, record: any) => (
         <Space size="middle">
-          <FuncTable
-            icon="fa-solid fa-pen-to-square"
-            title="edit"
-            onClick={() => showModalUpdateCategory(record, refetch)}
-          />
-
+          <FuncTable title="edit" onClick={() => show(record, refetch)} />
           <Popconfirm
             title="Are you sure to delete this category?"
-            description={`Delete the ${record?.name}`}
+            description={`Delete the [ ${record.name} ]`}
             placement="leftTop"
-            onConfirm={() => onDeleteCategory(record?.id)}
+            onConfirm={() => onDeleteCategory(record.id)}
             okText="Yes"
             cancelText="No"
           >
-            <FuncTable icon="fa-solid fa-trash-can" title="delete" />
+            <FuncTable title="delete" />
           </Popconfirm>
         </Space>
       ),
@@ -199,7 +194,7 @@ export const Category = () => {
         <Button
           type="primary"
           icon={<i className="fa-solid fa-plus"></i>}
-          onClick={() => showModalUpdateCategory(undefined, refetch)}
+          onClick={() => show(undefined, refetch)}
         >
           Add
         </Button>
@@ -230,7 +225,7 @@ export const Category = () => {
       ) : (
         ""
       )}
-      {updateCategoryModal}
+      {element}
     </div>
   );
 };
