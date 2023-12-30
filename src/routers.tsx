@@ -1,6 +1,6 @@
 import { createBrowserRouter } from "react-router-dom";
 import App from "./App";
-import { Category, Dashboard, Post } from "./pages";
+import { Category, Dashboard, Article } from "./pages";
 import Login from "./pages/Login";
 
 export const Router = createBrowserRouter([
@@ -17,8 +17,8 @@ export const Router = createBrowserRouter([
         element: <Category />,
       },
       {
-        path: "posts",
-        element: <Post />,
+        path: "articles",
+        element: <Article />,
       },
       {
         path: "users",

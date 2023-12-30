@@ -21,9 +21,9 @@ const menu = [
     label: "Categories",
   },
   {
-    key: "posts",
+    key: "articles",
     icon: <i className="fa-solid fa-newspaper"></i>,
-    label: "Posts",
+    label: "Articles",
   },
   {
     key: "users",

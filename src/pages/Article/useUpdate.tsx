@@ -1,50 +1,61 @@
-import { Button, Form, Input, Modal, Select, message } from "antd";
+import { Form, Input, Modal, Select, message } from "antd";
 import { useForm } from "antd/es/form/Form";
 import React, { useCallback } from "react";
-import { AddPost, UpdatePost } from "../../api/post";
+import { useAddArticle, useUpdateArticle } from "../../api/article";
+import { useGetCategories } from "../../api/category";
+import { toUpperCaseFirst } from "../../utils/string";
 
-export const useUpdatePost = (): [
+export const useUpdate = (): [
   React.ReactElement,
-  (post?: IPost, refetch?: () => void) => void
+  (refetch: () => void, article?: IArticle) => void
 ] => {
   const [api, element] = Modal.useModal();
   const [form] = useForm();
 
-  const onOk = async (post: IPost, refetch?: () => void) => {
-    try {
-      await form.submit();
-
-      const model = form.getFieldsValue();
-
-      if (post?.id) await UpdatePost(post?.id, { ...model });
-      else await AddPost({ ...model });
-
-      message.success(
-        `Your ${post?.id ? "update" : "add"}  have been successfully saved!`
-      );
-
-      if (refetch) refetch();
-    } catch (error: any) {
-      message.error(error?.message);
-    } finally {
-      form.resetFields();
-    }
-  };
-
   const show = useCallback(
-    (post?: any, refetch?: () => void) => {
-      if (post?.id) form.setFieldsValue({ ...post });
+    async (refetch: () => void, article?: any) => {
+      if (article) form.setFieldsValue({ ...article });
 
-      api.info({
+      const categories = await useGetCategories();
+      const options = categories?.map((category) => ({
+        label: toUpperCaseFirst(category.name),
+        value: category.id,
+      }));
+
+      api.confirm({
         closable: true,
         maskClosable: true,
-        onOk: () => onOk(post, refetch),
+        onOk: (close) => {
+          form
+            .validateFields()
+            .then((values) => {
+              if (article?.id) {
+                useUpdateArticle(article?.id, values)
+                  .then(() => {
+                    refetch();
+                    close();
+                  })
+                  .catch((err) => message.error(err?.message?.[0].message));
+              } else {
+                useAddArticle(values)
+                  .then(() => {
+                    refetch();
+                    close();
+                  })
+                  .catch((err) => message.error(err?.message?.[0].message));
+              }
+            })
+            .catch((e) => {
+              console.log(e);
+            });
+        },
+        afterClose: () => form.resetFields(),
         icon: (
           <div style={{ marginRight: 5 }}>
             <i className="fa-solid fa-edit"></i>
           </div>
         ),
-        title: post?.id ? "Update Post" : "Add Post",
+        title: article?.id ? "Update Article" : "Add Article",
         content: (
           <Form form={form} style={{ marginRight: 10 }} layout="vertical">
             <Form.Item label="Title" name="title" rules={[{ required: true }]}>
@@ -61,11 +72,11 @@ export const useUpdatePost = (): [
               <Input />
             </Form.Item>
             <Form.Item
-              label="CategoryID"
+              label="Categories"
               name="categoryId"
               rules={[{ required: true }]}
             >
-              <Input />
+              <Select placeholder="Please select category" options={options} />
             </Form.Item>
             <Form.Item
               label="ImageTopic"
@@ -90,17 +101,12 @@ export const useUpdatePost = (): [
             </Form.Item>
             <Form.Item label="Status" name="status">
               <Select
-                defaultValue={post?.status ?? 1}
+                defaultValue={1}
                 options={[
                   { label: "Active", value: 1 },
                   { label: "Suspend", value: 0 },
                 ]}
               />
-            </Form.Item>
-            <Form.Item wrapperCol={{ offset: 8, span: 16 }}>
-              <Button type="primary" htmlType="submit">
-                Submit
-              </Button>
             </Form.Item>
           </Form>
         ),

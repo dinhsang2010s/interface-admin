@@ -1,4 +1,4 @@
-interface IPost extends BaseModel {
+interface IArticle extends BaseModel {
   title: string;
   description: string;
   content: string;

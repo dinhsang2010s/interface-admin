@@ -1,6 +1,7 @@
 import "./style.less";
 import { Tooltip } from "antd";
 import { useEffect, useState } from "react";
+import { toUpperCaseFirst } from "../../utils/string";
 
 interface Props {
   icon?: string;
@@ -23,14 +24,12 @@ export const FuncTable = (props: Props) => {
   }, []);
 
   return (
-    <Tooltip
-      title={
-        props.title?.toLowerCase().charAt(0).toUpperCase() +
-        props.title.slice(1)
-      }
-    >
+    <Tooltip title={toUpperCaseFirst(props.title)}>
       <i
-        style={{ ...props.style, color: color }}
+        style={{
+          ...props.style,
+          color: color,
+        }}
         onClick={props.onClick}
         className={`fa-function ${icon}`}
       ></i>

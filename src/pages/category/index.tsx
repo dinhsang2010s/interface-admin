@@ -12,16 +12,19 @@ import {
   message,
 } from "antd";
 import { LoadingOutlined } from "@ant-design/icons";
-import { DeleteCategory, useGetCategories } from "../../api/category";
+import { useDeleteCategory, useGetCategories } from "../../api/category";
 import { toLocalDate } from "../../utils/dateTime";
 import { FuncTable } from "../../components/FuncTable";
 import { debounce } from "lodash";
-import { useUpdateCategoryModal } from "./useUpdateModal";
+import { useUpdate } from "./useUpdate";
+import { toUpperCaseFirst } from "../../utils/string";
 
 interface DataType {
   key: string;
   name: string;
   status: number;
+  createdBy: string;
+  updatedBy: string;
   createdAt: string;
   updatedAt: string;
 }
@@ -29,7 +32,7 @@ interface DataType {
 export const Category = () => {
   const [categories, setCategories] = useState<ICategory[]>([]);
   const [loading, setLoading] = useState<boolean>(false);
-  const [element, show] = useUpdateCategoryModal();
+  const [element, show] = useUpdate();
   const [value, setValue] = useState<string>("");
 
   const columns: ColumnsType<DataType> = [
@@ -50,38 +53,50 @@ export const Category = () => {
             style={{
               marginRight: 10,
               width: 10,
+              minWidth: 10,
               height: 10,
               borderRadius: "50%",
               background: record?.status === 1 ? "green" : "red",
             }}
           />
-          <span>{record?.name}</span>
+          <div
+            style={{
+              textOverflow: "ellipsis",
+              whiteSpace: "nowrap",
+              overflow: "hidden",
+            }}
+          >
+            {toUpperCaseFirst(record?.name)}
+          </div>
         </div>
       ),
     },
-    // {
-    //   title: "User",
-    //   key: "user",
-    //   dataIndex: "user",
-    //   render: (_, record: any) => (
-    //     <div className="flex">
-    //       {record?.createdBy ? (
-    //         <Tag color="var(--theme-primary)" key={record?.createdBy}>
-    //           {record?.createdBy}
-    //         </Tag>
-    //       ) : (
-    //         ""
-    //       )}
-    //       {record?.updatedBy ? (
-    //         <Tag color="#008000" key={record?.updatedBy}>
-    //           {record?.updatedBy}
-    //         </Tag>
-    //       ) : (
-    //         ""
-    //       )}
-    //     </div>
-    //   ),
-    // },
+    {
+      key: "createdBy",
+      title: "CreatedBy",
+      dataIndex: "createdBy",
+      render: (text: string) =>
+        text ? (
+          <Tag color="var(--theme-primary)" key={text}>
+            {text}
+          </Tag>
+        ) : (
+          ""
+        ),
+    },
+    {
+      key: "updatedBy",
+      title: "UpdatedBy",
+      dataIndex: "updatedBy",
+      render: (text: string) =>
+        text ? (
+          <Tag color="#008000" key={text}>
+            {text}
+          </Tag>
+        ) : (
+          ""
+        ),
+    },
     {
       key: "createdAt",
       title: "CreatedTime",
@@ -94,9 +109,7 @@ export const Category = () => {
       key: "updatedAt",
       title: "UpdatedTime",
       dataIndex: "updatedAt",
-      render: (text: string) => (
-        <span style={{ textAlign: "center" }}>{toLocalDate(text)}</span>
-      ),
+      render: (text: string) => <span>{toLocalDate(text)}</span>,
       sorter: (a, b) =>
         new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime(),
     },
@@ -108,7 +121,7 @@ export const Category = () => {
       fixed: "right",
       render: (_, record: any) => (
         <Space size="middle">
-          <FuncTable title="edit" onClick={() => show(record, refetch)} />
+          <FuncTable title="edit" onClick={() => show(refetch, record)} />
           <Popconfirm
             title="Are you sure to delete this category?"
             description={`Delete the [ ${record.name} ]`}
@@ -159,7 +172,7 @@ export const Category = () => {
   };
 
   const onDeleteCategory = async (id: string) => {
-    await DeleteCategory(id);
+    await useDeleteCategory(id);
     onRefetch();
   };
 
@@ -194,7 +207,7 @@ export const Category = () => {
         <Button
           type="primary"
           icon={<i className="fa-solid fa-plus"></i>}
-          onClick={() => show(undefined, refetch)}
+          onClick={() => show(refetch)}
         >
           Add
         </Button>

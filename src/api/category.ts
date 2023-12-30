@@ -8,7 +8,7 @@ export const useGetCategories = async (q?: string): Promise<ICategory[]> => {
   });
 };
 
-export const AddCategory = async (
+export const useAddCategory = async (
   category: CategoryDto
 ): Promise<ICategory> => {
   return await useRequest<ICategory>({
@@ -18,7 +18,7 @@ export const AddCategory = async (
   });
 };
 
-export const UpdateCategory = async (
+export const useUpdateCategory = async (
   categoryId: string,
   category: CategoryDto
 ): Promise<ICategory> => {
@@ -29,7 +29,7 @@ export const UpdateCategory = async (
   });
 };
 
-export const DeleteCategory = async (categoryId: string): Promise<void> => {
+export const useDeleteCategory = async (categoryId: string): Promise<void> => {
   await useRequest<void>({
     url: `categories/${categoryId}`,
     method: "DELETE",
