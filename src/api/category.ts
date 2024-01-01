@@ -1,10 +1,11 @@
-import { useRequest } from "../hooks/useRequest";
+import { getPagination, useRequest } from "../hooks/useRequest";
 
-export const useGetCategories = async (q?: string): Promise<ICategory[]> => {
-  return await useRequest<ICategory[]>({
+export const useGetCategories = async (
+  query: QueryDto
+): Promise<IPagination<ICategory[]>> => {
+  return await getPagination<ICategory[]>({
     url: "categories",
-    method: "GET",
-    params: { q },
+    params: { ...query },
   });
 };
 

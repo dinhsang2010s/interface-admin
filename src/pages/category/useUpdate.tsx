@@ -26,14 +26,14 @@ export const useUpdate = (): [
                   refetch();
                   close();
                 })
-                .catch((err) => message.error(err?.message?.[0].message));
+                .catch((err) => message.error(err?.message));
             } else {
               useAddCategory(values)
                 .then(() => {
                   refetch();
                   close();
                 })
-                .catch((err) => message.error(err?.message?.[0].message));
+                .catch((err) => message.error(err?.message));
             }
           });
         },

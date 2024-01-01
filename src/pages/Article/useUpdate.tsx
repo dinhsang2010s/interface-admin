@@ -4,6 +4,7 @@ import React, { useCallback } from "react";
 import { useAddArticle, useUpdateArticle } from "../../api/article";
 import { useGetCategories } from "../../api/category";
 import { toUpperCaseFirst } from "../../utils/string";
+import { CategorySelector } from "../../components/CategorySelector";
 
 export const useUpdate = (): [
   React.ReactElement,
@@ -15,12 +16,6 @@ export const useUpdate = (): [
   const show = useCallback(
     async (refetch: () => void, article?: any) => {
       if (article) form.setFieldsValue({ ...article });
-
-      const categories = await useGetCategories();
-      const options = categories?.map((category) => ({
-        label: toUpperCaseFirst(category.name),
-        value: category.id,
-      }));
 
       api.confirm({
         closable: true,
@@ -76,7 +71,7 @@ export const useUpdate = (): [
               name="categoryId"
               rules={[{ required: true }]}
             >
-              <Select placeholder="Please select category" options={options} />
+              <CategorySelector />
             </Form.Item>
             <Form.Item
               label="ImageTopic"

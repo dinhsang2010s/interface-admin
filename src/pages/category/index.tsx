@@ -1,13 +1,13 @@
 import "./style.less";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import type { ColumnsType } from "antd/es/table";
-import Table from "../../components/Table";
 import {
   Button,
   Input,
   Pagination,
   Popconfirm,
   Space,
+  Table,
   Tag,
   message,
 } from "antd";
@@ -18,30 +18,30 @@ import { FuncTable } from "../../components/FuncTable";
 import { debounce } from "lodash";
 import { useUpdate } from "./useUpdate";
 import { toUpperCaseFirst } from "../../utils/string";
-
-interface DataType {
-  key: string;
-  name: string;
-  status: number;
-  createdBy: string;
-  updatedBy: string;
-  createdAt: string;
-  updatedAt: string;
-}
+import useComputeHeight from "../../hooks/useHeight";
 
 export const Category = () => {
-  const [categories, setCategories] = useState<ICategory[]>([]);
+  const refHeight = useRef(null);
+  const height = useComputeHeight(refHeight);
+  const [categories, setCategories] = useState<IPagination<ICategory[]>>();
   const [loading, setLoading] = useState<boolean>(false);
   const [element, show] = useUpdate();
   const [value, setValue] = useState<string>("");
+  const [query, setQuery] = useState<QueryDto>({
+    offset: 0,
+    pageSize: 20,
+    orderBy: "",
+    q: "",
+  });
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const columns: ColumnsType<DataType> = [
+  const columns: ColumnsType<ICategory> = [
     {
       key: "name",
       title: "Name",
       dataIndex: "name",
       sorter: () => -1,
-      render: (_, record: any) => (
+      render: (_, record: ICategory) => (
         <div
           style={{
             display: "flex",
@@ -56,7 +56,7 @@ export const Category = () => {
               minWidth: 10,
               height: 10,
               borderRadius: "50%",
-              background: record?.status === 1 ? "green" : "red",
+              background: record.status === 1 ? "green" : "red",
             }}
           />
           <div
@@ -119,7 +119,7 @@ export const Category = () => {
       width: 100,
       align: "center",
       fixed: "right",
-      render: (_, record: any) => (
+      render: (_, record: ICategory) => (
         <Space size="middle">
           <FuncTable title="edit" onClick={() => show(refetch, record)} />
           <Popconfirm
@@ -137,8 +137,8 @@ export const Category = () => {
     },
   ];
 
-  const refetch = () => {
-    useGetCategories()
+  const refetch = (queryInput?: QueryDto) => {
+    useGetCategories(queryInput ?? query)
       .then((res) => setCategories(res))
       .catch((err) => message.error(err?.message));
   };
@@ -149,9 +149,10 @@ export const Category = () => {
 
   const onRefetch = () => {
     setLoading(true);
-    refetch();
-    setLoading(false);
     setValue("");
+    setCurrentPage(1);
+    refetch({ offset: 0, pageSize: 20, orderBy: "", q: "" });
+    setLoading(false);
   };
 
   const debouncedSearch = debounce((value) => {
@@ -176,12 +177,23 @@ export const Category = () => {
     onRefetch();
   };
 
+  const onChangeQuery = (page: number, pageSize: number) => {
+    setCurrentPage(page);
+    setQuery({
+      ...query,
+      offset: pageSize * (page - 1),
+      pageSize,
+      orderBy: "",
+      q: "",
+    });
+  };
+
   return (
     <div className="category">
       <div className="category-header">
         <div className="flex-center">
           <div style={{ marginRight: 12, fontWeight: 600 }}>
-            Total: {categories?.length}
+            Total: {categories?.total}
           </div>
           <Button
             style={{ marginRight: 12 }}
@@ -212,32 +224,40 @@ export const Category = () => {
           Add
         </Button>
       </div>
-      <Table
-        rowKey="key"
-        pagination={false}
-        columns={columns}
-        dataSource={categories}
-      />
-      {categories && categories.length > 19 ? (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "end",
-            marginTop: 10,
+      <div
+        className="category-list"
+        ref={refHeight}
+        style={{ height: height - 70 }}
+      >
+        <Table
+          rowKey="key"
+          pagination={false}
+          scroll={{
+            y: height ? height - 125 : 500,
+            x: 500,
           }}
-        >
-          <Pagination
-            showQuickJumper
-            total={categories?.length}
-            pageSize={20}
-            showSizeChanger={true}
-            pageSizeOptions={["20", "50", "100"]}
-          />
-        </div>
-      ) : (
-        ""
-      )}
+          columns={columns}
+          dataSource={categories?.data}
+        />
+      </div>
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "end",
+          marginTop: 10,
+        }}
+      >
+        <Pagination
+          showQuickJumper
+          total={categories?.total}
+          pageSize={20}
+          showSizeChanger={true}
+          current={currentPage}
+          pageSizeOptions={["20", "50", "100"]}
+          onChange={onChangeQuery}
+        />
+      </div>
       {element}
     </div>
   );

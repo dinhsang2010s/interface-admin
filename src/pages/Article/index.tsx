@@ -3,9 +3,11 @@ import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   Empty,
+  Form,
   Input,
   Pagination,
   Popconfirm,
+  Select,
   Space,
   Tag,
   Tooltip,
@@ -19,6 +21,7 @@ import { toLocalDate } from "../../utils/dateTime";
 import { FuncTable } from "../../components/FuncTable";
 import { useUpdate } from "./useUpdate";
 import { toUpperCaseFirst } from "../../utils/string";
+import { CategorySelector } from "../../components/CategorySelector";
 
 export const Article = () => {
   const refHeight = useRef(null);
@@ -33,9 +36,10 @@ export const Article = () => {
     orderBy: "",
     q: "",
   });
+  const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const refetch = () => {
-    useGetArticles(query)
+  const refetch = (queryInput?: QueryDto) => {
+    useGetArticles(queryInput ?? query)
       .then((res) => setArticles(res))
       .catch((err) => message.error(err?.message));
   };
@@ -46,9 +50,10 @@ export const Article = () => {
 
   const onRefetch = () => {
     setLoading(true);
-    refetch();
-    setLoading(false);
     setValue("");
+    setCurrentPage(1);
+    refetch({ offset: 0, pageSize: 20, orderBy: "", q: "" });
+    setLoading(false);
   };
 
   const debouncedSearch = debounce((value) => {
@@ -68,9 +73,21 @@ export const Article = () => {
     }
   };
 
-  const onDeleteArticle = async (id: string) => {
-    await useDeleteArticle(id);
-    onRefetch();
+  const onDeleteArticle = (id: string) => {
+    useDeleteArticle(id)
+      .then(() => onRefetch())
+      .catch((err) => message.error(err));
+  };
+
+  const onChangeQuery = (page: number, pageSize: number) => {
+    setCurrentPage(page);
+    setQuery({
+      ...query,
+      offset: pageSize * (page - 1),
+      pageSize,
+      orderBy: "",
+      q: "",
+    });
   };
 
   return (
@@ -78,7 +95,7 @@ export const Article = () => {
       <div className="article-header">
         <div className="flex-center">
           <div style={{ marginRight: 12, fontWeight: 600 }}>
-            Total: {articles?.total}
+            Total : {articles?.total}
           </div>
           <Button
             style={{ marginRight: 12 }}
@@ -100,6 +117,13 @@ export const Article = () => {
               )
             }
           />
+          <div className="flex-center">
+            <Form title="Filter" layout="inline">
+              <Form.Item label="" name="categoryId">
+                <CategorySelector width={200} />
+              </Form.Item>
+            </Form>
+          </div>
         </div>
         <Button
           type="primary"
@@ -155,12 +179,13 @@ export const Article = () => {
                         style={{
                           marginRight: 5,
                           width: 10,
+                          minWidth: 10,
                           height: 10,
                           borderRadius: "50%",
                           background: article.status === 1 ? "green" : "red",
                         }}
                       />
-                      <h4
+                      <h5
                         style={{
                           textOverflow: "ellipsis",
                           whiteSpace: "nowrap",
@@ -168,7 +193,7 @@ export const Article = () => {
                         }}
                       >
                         {toUpperCaseFirst(article.title)}
-                      </h4>
+                      </h5>
                     </div>
                     <span style={{ color: "#989393", fontSize: 12 }}>
                       {article.description
@@ -227,7 +252,6 @@ export const Article = () => {
                       <Tooltip title="View Article">
                         <Button
                           style={{ fontSize: 12 }}
-                          children={<span>View Article</span>}
                           icon={<UngroupOutlined />}
                         />
                       </Tooltip>
@@ -273,26 +297,24 @@ export const Article = () => {
           </div>
         )}
       </div>
-      {articles?.data && articles?.data.length > 19 ? (
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "end",
-            marginTop: 10,
-          }}
-        >
-          <Pagination
-            showQuickJumper
-            total={articles?.total}
-            pageSize={20}
-            showSizeChanger={true}
-            pageSizeOptions={["20", "50", "100"]}
-          />
-        </div>
-      ) : (
-        ""
-      )}
+      <div
+        style={{
+          display: "flex",
+          alignItems: "center",
+          justifyContent: "end",
+          marginTop: 10,
+        }}
+      >
+        <Pagination
+          showQuickJumper
+          total={articles?.total}
+          pageSize={20}
+          showSizeChanger={true}
+          current={currentPage}
+          pageSizeOptions={["20", "50", "100"]}
+          onChange={onChangeQuery}
+        />
+      </div>
       {element}
     </div>
   );

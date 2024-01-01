@@ -16,7 +16,6 @@ const Login = () => {
           localStorage.setItem("token", res?.accessToken);
           window.location.replace("/dashboard");
         }
-
         useSleep(10).then(() => setLoading(false));
       })
       .catch((ex: any) => {
@@ -61,7 +60,10 @@ const Login = () => {
           <Form.Item
             label="Password"
             name="password"
-            rules={[{ required: true, message: "Please input your password!" }]}
+            rules={[
+              { required: true, message: "Please input your password!" },
+              { min: 6, message: "Password must be minimum 6 characters!" },
+            ]}
           >
             <Input.Password style={{ height: 40 }} />
           </Form.Item>
