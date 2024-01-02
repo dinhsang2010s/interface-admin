@@ -1,10 +1,11 @@
-import { Form, Input, Modal, Select, message } from "antd";
+import { Form, Input, Modal, Select, Upload, message } from "antd";
 import { useForm } from "antd/es/form/Form";
 import React, { useCallback } from "react";
 import { useAddArticle, useUpdateArticle } from "../../api/article";
 import { useGetCategories } from "../../api/category";
 import { toUpperCaseFirst } from "../../utils/string";
 import { CategorySelector } from "../../components/CategorySelector";
+import { InputUpload } from "../../components/InputUpload/intex";
 
 export const useUpdate = (): [
   React.ReactElement,
@@ -78,7 +79,7 @@ export const useUpdate = (): [
               name="imageTopic"
               rules={[{ required: true }]}
             >
-              <Input />
+              <InputUpload />
             </Form.Item>
             <Form.Item
               label="KeyWordSeo"
