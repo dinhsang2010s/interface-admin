@@ -1,5 +1,5 @@
 import "./style.less";
-import React, { useEffect, useRef, useState } from "react";
+import  { useEffect, useRef, useState } from "react";
 import {
   Button,
   Empty,
@@ -37,21 +37,21 @@ export const Article = () => {
   });
   const [currentPage, setCurrentPage] = useState<number>(1);
 
-  const refetch = (queryInput?: QueryDto) => {
+  const refresh = (queryInput?: QueryDto) => {
     useGetArticles(queryInput ?? query)
       .then((res) => setArticles(res))
       .catch((err) => message.error(err?.message));
   };
 
   useEffect(() => {
-    refetch();
+    refresh();
   }, [query]);
 
-  const onRefetch = () => {
+  const onRefresh = () => {
     setLoading(true);
     setValue("");
     setCurrentPage(1);
-    refetch({ offset: 0, pageSize: 20, orderBy: "", q: "" });
+    refresh({ offset: 0, pageSize: 20, orderBy: "", q: "" });
     setLoading(false);
   };
 
@@ -68,13 +68,13 @@ export const Article = () => {
       debouncedSearch(e.target.value);
     } else {
       setLoading(false);
-      refetch();
+      refresh();
     }
   };
 
   const onDeleteArticle = (id: string) => {
     useDeleteArticle(id)
-      .then(() => onRefetch())
+      .then(() => onRefresh())
       .catch((err) => message.error(err));
   };
 
@@ -99,9 +99,9 @@ export const Article = () => {
           <Button
             style={{ marginRight: 12 }}
             icon={<i className="fa-solid fa-rotate"></i>}
-            onClick={onRefetch}
+            onClick={onRefresh}
           >
-            Refetch
+            Refresh
           </Button>
           <Input
             value={value}
@@ -127,7 +127,7 @@ export const Article = () => {
         <Button
           type="primary"
           icon={<i className="fa-solid fa-plus"></i>}
-          onClick={() => show(refetch)}
+          onClick={() => show(refresh)}
         >
           Add
         </Button>
@@ -258,7 +258,7 @@ export const Article = () => {
                     <Space style={{ flexGrow: 0 }} size="middle">
                       <FuncTable
                         title="edit"
-                        onClick={() => show(refetch, article)}
+                        onClick={() => show(refresh, article)}
                       />
                       <Popconfirm
                         title="Are you sure to delete this category?"

@@ -24,12 +24,12 @@
     "@dnd-kit/utilities": "^3.2.2",
     "@types/react": "^18.2.15",
     "@types/react-dom": "^18.2.7",
-    "@typescript-eslint/eslint-plugin": "^6.0.0",
-    "@typescript-eslint/parser": "^6.0.0",
+    "@typescript-eslint/eslint-plugin": "^6.17.0",
+    "@typescript-eslint/parser": "^6.17.0",
     "@vitejs/plugin-react": "^4.0.3",
     "axios": "^1.6.2",
     "css-loader": "^6.8.1",
-    "eslint": "^8.45.0",
+    "eslint": "^8.56.0",
     "eslint-plugin-react-hooks": "^4.6.0",
     "eslint-plugin-react-refresh": "^0.4.3",
     "less": "^4.2.0",
@@ -38,7 +38,7 @@
     "react-infinite-scroll-component": "^6.1.0",
     "react-router-dom": "^6.17.0",
     "style-loader": "^3.3.3",
-    "typescript": "^5.0.2",
+    "typescript": "^5.3.3",
     "vite": "^4.4.5"
   }
 }
