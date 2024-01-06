@@ -2,6 +2,7 @@ import "./style.less"
 import {PlusOutlined, LoadingOutlined} from '@ant-design/icons';
 import {message, Upload, UploadProps} from "antd";
 import {useEffect, useState} from "react";
+import Avatar from "../Avatar";
 
 interface Props {
     onChange?: (value: string) => void;
@@ -22,19 +23,13 @@ export const UploadInput = (props: Props) => {
         multiple: false,
         showUploadList: false,
         action: URL_UPLOAD,
+        accept: "image/*",
         headers: {
             Authorization: "Bearer " + localStorage.getItem("token") ?? ""
         },
         onChange(info) {
-            const {status, name, response, type} = info.file;
-            if (status !== 'uploading') {
-                setLoading(true);
-                if (type !== "image/jpeg") {
-                    message.error(`The file [ ${name} ] data type is invalid.`);
-                    setLoading(false)
-                    return
-                }
-            }
+            const {status, name, response} = info.file;
+            if (status !== 'uploading') setLoading(true);
 
             if (status === 'done') {
                 const urlImg = `${URL_GET_FILE}${response.fileName || ""}`
@@ -42,7 +37,10 @@ export const UploadInput = (props: Props) => {
                 setUrl(urlImg)
                 setLoading(false)
                 message.success(`${name} file uploaded successfully.`);
-            } else if (status === 'error') message.error(`${name} file upload failed.`);
+            } else if (status === 'error') {
+                setLoading(false)
+                message.error(`${name} file upload failed.`);
+            }
         },
         onDrop(e) {
             console.log('Dropped files', e.dataTransfer.files);
@@ -63,7 +61,7 @@ export const UploadInput = (props: Props) => {
              style={{border: "1px dashed  #d9d9d9", borderRadius: 6, background: "#fafafa", padding: 10}}>
             {
                 url ? <div className="flex w-full">
-                    <img style={{height: 100, borderRadius: 6}} src={url} alt="image-topic"/>
+                    <Avatar style={{height: 100, borderRadius: 6}} url={url}/>
                     <div className="flex-center w-full">
                         {uploadButton}
                     </div>

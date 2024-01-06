@@ -4,6 +4,7 @@ import React, {useCallback} from "react";
 import {useAddArticle, useUpdateArticle} from "../../api/article";
 import {CategorySelector} from "../../components/CategorySelector";
 import {UploadInput} from "../../components/UploadInput/intex";
+import {del} from "../../hooks/useRequest.tsx";
 
 export const useUpdate = (): [
     React.ReactElement,
@@ -25,23 +26,36 @@ export const useUpdate = (): [
                         .then((values) => {
                             if (article?.id) {
                                 useUpdateArticle(article?.id, values)
-                                    .then(() => {
+                                    .then((res: IArticle) => {
+                                        message.success(` Update article [ ${res.title} ] successfully.`)
                                         refresh();
+                                        form.resetFields()
                                         close();
                                     })
-                                    .catch((err) => message.error(err?.message?.[0].message));
+                                    .catch((err) => message.error(err?.message));
                             } else {
                                 useAddArticle(values)
-                                    .then(() => {
+                                    .then((res: IArticle) => {
+                                        message.success(` Add article [ ${res.title} ] successfully.`)
                                         refresh();
+                                        form.resetFields()
                                         close();
                                     })
-                                    .catch((err) => message.error(err?.message?.[0].message));
+                                    .catch((err) => message.error(err?.message));
                             }
                         })
                         .catch();
                 },
-                afterClose: () => form.resetFields(),
+                afterClose: () => {
+                    const {imageTopic} = form.getFieldsValue()
+                    if (imageTopic) {
+                        // const fileName: string = imageTopic?.replace(/^.*[\\/]/, '')
+                        const fileName: string = imageTopic?.split('/').pop()
+                        del(`wp-contents/${fileName}`).then(() => {
+                            form.resetFields()
+                        }).catch((err) => message.error(err?.message))
+                    }
+                },
                 icon: (
                     <div style={{marginRight: 5}}>
                         <i className="fa-solid fa-edit"></i>

@@ -24,14 +24,16 @@ export const useUpdate = (): [
                         .then((values) => {
                             if (category?.id) {
                                 useUpdateCategory(category?.id, values)
-                                    .then(() => {
+                                    .then((res: ICategory) => {
+                                        message.success(`Update category [ ${res.name} ] successfully.`)
                                         refresh();
                                         close();
                                     })
                                     .catch((err) => message.error(err?.message));
                             } else {
                                 useAddCategory(values)
-                                    .then(() => {
+                                    .then((res: ICategory) => {
+                                        message.success(`Add category [ ${res.name} ] successfully.`)
                                         refresh();
                                         close();
                                     })
