@@ -66,7 +66,7 @@ function App() {
                                 onCollapse={(value) => setCollapsed(value)}
                             >
                                 <div className="logo">
-                                    <img src="/vite.svg" alt=""/>
+                                    <img style={{minWidth: 45, width: 45, height: 45}} src="/logo.png" alt=""/>
                                 </div>
                                 <Menu
                                     className="menu"
@@ -98,7 +98,7 @@ function App() {
                                         </div>
                                         <div className="header-main-right flex">
                                             <div className="info-user">
-                                                <img className="w-full" src="/vite.svg" alt=""/>
+                                                <img className="w-full" src="/user-info.png" alt=""/>
                                             </div>
                                         </div>
                                     </div>

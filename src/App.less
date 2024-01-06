@@ -1,5 +1,6 @@
 .App {
   height: 100vh;
+
   .main {
     height: 100%;
     position: relative;
@@ -7,12 +8,14 @@
     .slider {
       box-shadow: var(--box-shadow);
       z-index: 1000;
+
       .logo {
         height: 64px;
         display: flex;
         justify-content: center;
         align-items: center;
       }
+
       .menu {
         padding: 0px 10px;
       }
@@ -29,6 +32,7 @@
       height: 96px;
       max-height: 96px;
       border-left: unset;
+
       &-main {
         min-height: 64px;
         display: flex;
@@ -41,16 +45,25 @@
         min-height: 64px;
         background-color: var(--bg-header);
         box-shadow: var(--box-shadow);
+
         &-left {
           //display: flex;
         }
+
         &-right {
           .info-user {
             width: 35px;
             height: 35px;
-            border-radius: 50%;
-            overflow: hidden;
-            box-shadow: var(--box-shadow-primary);
+            //border-radius: 50%;
+            //overflow: hidden;
+            //box-shadow: var(--box-shadow-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+
+            &:hover {
+              cursor: pointer;
+            }
           }
         }
       }
