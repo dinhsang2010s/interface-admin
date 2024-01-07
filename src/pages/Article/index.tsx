@@ -12,7 +12,11 @@ import {
     Tooltip,
     message,
 } from "antd";
-import {LoadingOutlined, UngroupOutlined} from "@ant-design/icons";
+import {
+    LoadingOutlined,
+    UngroupOutlined,
+    InfoCircleOutlined,
+} from "@ant-design/icons";
 import {debounce} from "lodash";
 import {useDeleteArticle, useGetArticles} from "../../api/article";
 import useComputeHeight from "../../hooks/useHeight";
@@ -31,15 +35,16 @@ export const Article = () => {
     const [loading, setLoading] = useState<boolean>(false);
     const [value, setValue] = useState<string>("");
     const [element, show] = useUpdate();
-    const [query, setQuery] = useState<QueryDto>({
+    const [query, setQuery] = useState<QueryArticleDto>({
         offset: 0,
         pageSize: 20,
         orderBy: "",
         q: "",
+        categoryId: "",
     });
     const [currentPage, setCurrentPage] = useState<number>(1);
 
-    const refresh = (queryInput?: QueryDto) => {
+    const refresh = (queryInput?: QueryArticleDto) => {
         useGetArticles(queryInput ?? query)
             .then((res) => setArticles(res))
             .catch((err) => message.error(err?.message));
@@ -53,14 +58,12 @@ export const Article = () => {
         setLoading(true);
         setValue("");
         setCurrentPage(1);
-        refresh({offset: 0, pageSize: 20, orderBy: "", q: ""});
+        refresh({offset: 0, pageSize: 20, orderBy: "", q: "", categoryId: ""});
         setLoading(false);
     };
 
     const debouncedSearch = debounce((value) => {
-        useGetArticles({...query, q: value})
-            .then((res) => setArticles(res))
-            .catch((err) => message.error(err?.message));
+        refresh({...query, q: value});
     }, 500);
 
     const onSearchArticle = (e: any) => {
@@ -92,15 +95,24 @@ export const Article = () => {
     };
 
     const onFormValuesChange = (_: any, values: any) => {
-        console.log(values)
-    }
+        refresh({...query, categoryId: values.categoryId});
+    };
 
     return (
         <div className="article">
             <div className="article-header">
                 <div className="flex-center">
-                    <div style={{marginRight: 12, fontWeight: 600}}>
-                        Total : {articles?.total}
+                    <div
+                        style={{
+                            marginRight: 12,
+                            fontWeight: 600,
+                            display: "flex",
+                            alignItems: "center",
+                        }}
+                    >
+                        <span>Total</span>
+                        <span style={{margin: "0px 2px"}}>:</span>
+                        <span>{articles?.total}</span>
                     </div>
                     <Button
                         style={{marginRight: 12}}
@@ -123,7 +135,12 @@ export const Article = () => {
                         }
                     />
                     <div className="flex-center">
-                        <Form onValuesChange={onFormValuesChange} form={form} layout="inline">
+                        <img style={{width: 22, height: 22, paddingRight: 5}} src="/filter.png" alt=""/>
+                        <Form
+                            onValuesChange={onFormValuesChange}
+                            form={form}
+                            layout="inline"
+                        >
                             <Form.Item label="Catygory" name="categoryId">
                                 <CategorySelector width={200}/>
                             </Form.Item>
@@ -149,13 +166,16 @@ export const Article = () => {
                             <li key={article.id} className="article-item">
                                 <div style={{display: "flex"}}>
                                     <div className="image-topic">
-                                        <Avatar style={{
-                                            width: 110,
-                                            minWidth: 110,
-                                            height: 80,
-                                            borderRadius: 6,
-                                            marginRight: 12,
-                                        }} url={article.imageTopic}/>
+                                        <Avatar
+                                            style={{
+                                                width: 110,
+                                                minWidth: 110,
+                                                height: 80,
+                                                borderRadius: 6,
+                                                marginRight: 12,
+                                            }}
+                                            url={article.imageTopic}
+                                        />
                                     </div>
                                     <div
                                         style={{
@@ -195,15 +215,22 @@ export const Article = () => {
                                                 {toUpperCaseFirst(article.title)}
                                             </h5>
                                         </div>
-                                        <div style={{display: "flex", alignItems: "center"}}>
-                                            <img style={{width: 18, height: 18, marginRight: 2, color: "red"}}
-                                                 src={"./info.png"}
-                                                 alt=""/>
-                                            <span style={{color: "#989393", fontSize: 12}}>
-                      {article.description
-                          ? toUpperCaseFirst(article.description)
-                          : "No description..."}
-                    </span>
+                                        <div style={{
+                                            display: "flex",
+                                            alignItems: "center",
+                                        }}>
+                                            <InfoCircleOutlined style={{marginRight: 5}}/>
+                                            <span style={{
+                                                fontSize: 12,
+                                                color: "#989393",
+                                                textOverflow: "ellipsis",
+                                                whiteSpace: "nowrap",
+                                                overflow: "hidden",
+                                            }}>
+                        {article.description
+                            ? toUpperCaseFirst(article.description)
+                            : "No description..."}
+                      </span>
                                         </div>
                                         <div
                                             className="article-info"
@@ -270,7 +297,7 @@ export const Article = () => {
                                                 title="Are you sure to delete this category?"
                                                 description={`Delete the [ ${article.title.slice(
                                                     0,
-                                                    50
+                                                    50,
                                                 )}... ]`}
                                                 placement="leftTop"
                                                 onConfirm={() => onDeleteArticle(article.id)}

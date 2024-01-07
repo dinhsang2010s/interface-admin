@@ -11,6 +11,10 @@ interface QueryDto {
   q: string;
 }
 
+interface QueryArticleDto extends QueryDto {
+  categoryId: string;
+}
+
 interface CategoryDto {
   name: string;
 }

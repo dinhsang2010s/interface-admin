@@ -5,6 +5,7 @@ import {useAddArticle, useUpdateArticle} from "../../api/article";
 import {CategorySelector} from "../../components/CategorySelector";
 import {UploadInput} from "../../components/UploadInput/intex";
 import {del} from "../../hooks/useRequest.tsx";
+import {messageContent} from "../../utils/string.ts";
 
 export const useUpdate = (): [
     React.ReactElement,
@@ -27,7 +28,7 @@ export const useUpdate = (): [
                             if (article?.id) {
                                 useUpdateArticle(article?.id, values)
                                     .then((res: IArticle) => {
-                                        message.success(` Update article [ ${res.title} ] successfully.`)
+                                        message.success(` Update article [ ${messageContent(res.title, 50)} ] successfully.`)
                                         refresh();
                                         form.resetFields()
                                         close();
@@ -36,7 +37,7 @@ export const useUpdate = (): [
                             } else {
                                 useAddArticle(values)
                                     .then((res: IArticle) => {
-                                        message.success(` Add article [ ${res.title} ] successfully.`)
+                                        message.success(` Add article [ ${messageContent(res.title, 50)} ] successfully.`)
                                         refresh();
                                         form.resetFields()
                                         close();

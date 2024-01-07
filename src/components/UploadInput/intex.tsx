@@ -28,11 +28,11 @@ export const UploadInput = (props: Props) => {
             Authorization: "Bearer " + localStorage.getItem("token") ?? ""
         },
         onChange(info) {
-            const {status, name, response} = info.file;
+            const {status, name, response} = info?.file;
             if (status !== 'uploading') setLoading(true);
 
             if (status === 'done') {
-                const urlImg = `${URL_GET_FILE}${response.fileName || ""}`
+                const urlImg = `${URL_GET_FILE}${response?.fileName || ""}`
                 if (props.onChange) props.onChange(urlImg)
                 setUrl(urlImg)
                 setLoading(false)
