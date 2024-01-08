@@ -25,7 +25,7 @@ import {FuncTable} from "../../components/FuncTable";
 import {useUpdate} from "./useUpdate";
 import {toUpperCaseFirst} from "../../utils/string";
 import {CategorySelector} from "../../components/CategorySelector";
-import Avatar from "../../components/Avatar";
+import {Avatar} from "../../components/Avatar";
 
 export const Article = () => {
     const refHeight = useRef(null);

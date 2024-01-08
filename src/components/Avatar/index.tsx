@@ -5,7 +5,7 @@ interface Props {
     style?: React.CSSProperties
 }
 
-const Avatar = (props: Props) => {
+export const Avatar = (props: Props) => {
     return <img
         style={props.style}
         src={props.url}
@@ -15,5 +15,3 @@ const Avatar = (props: Props) => {
         }}
         alt="article-topic"/>
 }
-
-export default Avatar

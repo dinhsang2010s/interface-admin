@@ -12,7 +12,10 @@ module.exports = {
     parserOptions: {
         sourceType: "module",
         tsconfigRootDir: __dirname,
-        project: ["./tsconfig.eslint.json"]
+        project: "tsconfig.json",
+        ecmaFeatures: {
+            impliedStrict: true
+        }
     },
     ignorePatterns: ["dist", ".eslintrc.cjs"],
     plugins: ["react-refresh", "@typescript-eslint"],
@@ -21,5 +24,12 @@ module.exports = {
             "warn",
             {allowConstantExport: true},
         ],
+        "@typescript-eslint/interface-name-prefix": "off",
+        "@typescript-eslint/explicit-function-return-type": "off",
+        "@typescript-eslint/no-explicit-any": "off",
+        "@typescript-eslint/explicit-module-boundary-types": "off",
+        "@typescript-eslint/no-unused-vars": "off",
+        "@typescript-eslint/ban-types": "off",
+        "@typescript-eslint/no-unsafe-assignment": "off"
     },
 };

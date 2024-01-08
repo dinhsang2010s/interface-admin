@@ -2,7 +2,7 @@ import "./style.less"
 import {PlusOutlined, LoadingOutlined} from '@ant-design/icons';
 import {message, Upload, UploadProps} from "antd";
 import {useEffect, useState} from "react";
-import Avatar from "../Avatar";
+import {Avatar} from "../Avatar";
 
 interface Props {
     onChange?: (value: string) => void;
