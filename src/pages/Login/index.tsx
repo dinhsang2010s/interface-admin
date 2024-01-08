@@ -1,7 +1,7 @@
 import {useState} from "react";
 import "./style.less";
 import {Button, Form, Input, Typography, message} from "antd";
-import {useSleep} from "../../hooks/useSleep";
+import {useSleep} from "../../hooks/useSleep.ts";
 import {useLogin} from "../../api/auth";
 
 const {Title} = Typography;
@@ -35,7 +35,7 @@ const Login = () => {
             <div className="login-form flex-center">
                 <div className="login-form-description">
                     <div className="login-form-logo">
-                        <img src="/vite.svg" alt=""/>
+                        <img style={{width: 300, height: 100}} src="/techco+logo.png" alt=""/>
                     </div>
                     <Title style={{margin: "25px 0px 0px", letterSpacing: 3}} level={4}>
                         Welcome to system admin!

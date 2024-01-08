@@ -4,7 +4,7 @@ import React, {useCallback} from "react";
 import {useAddArticle, useUpdateArticle} from "../../api/article";
 import {CategorySelector} from "../../components/CategorySelector";
 import {UploadInput} from "../../components/UploadInput/intex";
-import {del} from "../../hooks/useRequest.tsx";
+import {del} from "../../hooks/useRequest.ts";
 import {messageContent} from "../../utils/string.ts";
 
 export const useUpdate = (): [
@@ -15,6 +15,7 @@ export const useUpdate = (): [
     const [form] = useForm();
 
     const show = useCallback(
+        // eslint-disable-next-line
         async (refresh: () => void, article?: any) => {
             if (article) form.setFieldsValue({...article});
 

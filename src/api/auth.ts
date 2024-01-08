@@ -1,4 +1,4 @@
-import {useRequest} from "../hooks/useRequest";
+import {useRequest} from "../hooks/useRequest.ts";
 
 export const useGetProfile = async (): Promise<{ id: string, exp: number }> => {
     return await useRequest<{ id: string, exp: number }>({

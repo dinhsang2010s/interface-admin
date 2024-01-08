@@ -5,14 +5,16 @@
 
   &-banner {
     flex-grow: 3;
-    padding: 32px 0px 32px 32px;
+    padding: 32px 0 32px 32px;
+
     &-logo {
       width: 100%;
       border-radius: 6px;
       background: var(--theme-background);
       overflow: hidden;
+
       img {
-        max-width: 508px;
+        max-width: 600px;
       }
     }
   }
@@ -20,6 +22,7 @@
   &-form {
     flex-grow: 1;
     flex-direction: column;
+
     .ant-form {
       width: 80%;
     }
@@ -36,10 +39,12 @@
       width: 0;
       margin: 0;
       padding: 0;
+
       img {
         opacity: 0;
       }
     }
+
     &-form {
       width: 100%;
     }

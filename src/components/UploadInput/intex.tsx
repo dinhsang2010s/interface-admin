@@ -16,7 +16,7 @@ export const UploadInput = (props: Props) => {
     const [loading, setLoading] = useState<boolean>(false);
     useEffect(() => {
         if (props.value) setUrl(props.value)
-    }, []);
+    }, [props.value]);
 
     const propsUpload: UploadProps = {
         name: 'file',
