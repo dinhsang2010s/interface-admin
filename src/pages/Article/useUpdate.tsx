@@ -4,8 +4,8 @@ import React, {useCallback} from "react";
 import {useAddArticle, useUpdateArticle} from "../../api/article";
 import {CategorySelector} from "../../components/CategorySelector";
 import {UploadInput} from "../../components/UploadInput/intex";
-import {del} from "../../hooks/useRequest.ts";
 import {messageContent} from "../../utils/string.ts";
+import {useDeleteImageTopic} from "../../api/upload.ts";
 
 export const useUpdate = (): [
     React.ReactElement,
@@ -15,11 +15,11 @@ export const useUpdate = (): [
     const [form] = useForm();
 
     const show = useCallback(
-        // eslint-disable-next-line
         async (refresh: () => void, article?: any) => {
             if (article) form.setFieldsValue({...article});
 
             api.confirm({
+                width: 600,
                 closable: true,
                 maskClosable: true,
                 onOk: (close) => {
@@ -30,18 +30,18 @@ export const useUpdate = (): [
                                 useUpdateArticle(article?.id, values)
                                     .then((res: IArticle) => {
                                         message.success(` Update article [ ${messageContent(res.title, 50)} ] successfully.`)
-                                        refresh();
+                                        refresh()
                                         form.resetFields()
-                                        close();
+                                        close()
                                     })
                                     .catch((err) => message.error(err?.message));
                             } else {
                                 useAddArticle(values)
                                     .then((res: IArticle) => {
                                         message.success(` Add article [ ${messageContent(res.title, 50)} ] successfully.`)
-                                        refresh();
+                                        refresh()
                                         form.resetFields()
-                                        close();
+                                        close()
                                     })
                                     .catch((err) => message.error(err?.message));
                             }
@@ -50,10 +50,9 @@ export const useUpdate = (): [
                 },
                 afterClose: () => {
                     const {imageTopic} = form.getFieldsValue()
+                    console.log(imageTopic)
                     if (imageTopic) {
-                        // const fileName: string = imageTopic?.replace(/^.*[\\/]/, '')
-                        const fileName: string = imageTopic?.split('/').pop()
-                        del(`wp-contents/${fileName}`).then(() => {
+                        useDeleteImageTopic(imageTopic).then(() => {
                             form.resetFields()
                         }).catch((err) => message.error(err?.message))
                     }

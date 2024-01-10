@@ -1,4 +1,5 @@
 import React from "react";
+import {Image} from "antd";
 
 interface Props {
     url?: string
@@ -6,12 +7,13 @@ interface Props {
 }
 
 export const Avatar = (props: Props) => {
-    return <img
+    return <Image
+        className="w-full"
         style={props.style}
         src={props.url}
         onError={({currentTarget}) => {
             currentTarget.onerror = null; // prevents looping
             currentTarget.src = "./article-default.png";
         }}
-        alt="article-topic"/>
+    />
 }

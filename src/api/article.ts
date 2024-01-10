@@ -1,17 +1,18 @@
 import {getPagination, useRequest} from "../hooks/useRequest.ts";
+import {ARTICLES} from "./const.url.ts";
 
 export const useGetArticles = async (
     query: QueryDto
 ): Promise<IPagination<IArticle[]>> => {
     return await getPagination<IArticle[]>({
-        url: "articles",
+        url: ARTICLES,
         params: {...query},
     });
 };
 
 export const useAddArticle = async (post: PostDto): Promise<IArticle> => {
     return await useRequest<IArticle>({
-        url: "articles",
+        url: ARTICLES,
         method: "POST",
         body: post,
     });
@@ -22,7 +23,7 @@ export const useUpdateArticle = async (
     post: PostDto
 ): Promise<IArticle> => {
     return await useRequest<IArticle>({
-        url: `articles/${postId}`,
+        url: `${ARTICLES}/${postId}`,
         method: "PUT",
         body: post,
     });
@@ -30,7 +31,7 @@ export const useUpdateArticle = async (
 
 export const useDeleteArticle = async (postId: string): Promise<void> => {
     await useRequest<void>({
-        url: `articles/${postId}`,
+        url: `${ARTICLES}/${postId}`,
         method: "DELETE",
     });
 };

@@ -172,7 +172,6 @@ export const Article = () => {
                                                 minWidth: 110,
                                                 height: 80,
                                                 borderRadius: 6,
-                                                marginRight: 12,
                                             }}
                                             url={article.imageTopic}
                                         />
@@ -183,6 +182,7 @@ export const Article = () => {
                                             whiteSpace: "nowrap",
                                             overflow: "hidden",
                                             width: "100%",
+                                            marginLeft: 12
                                         }}
                                     >
                                         <div

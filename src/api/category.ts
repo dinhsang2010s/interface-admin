@@ -1,10 +1,11 @@
 import {getPagination, useRequest} from "../hooks/useRequest.ts";
+import {CATEGORIES} from "./const.url.ts";
 
 export const useGetCategories = async (
     query: QueryDto
 ): Promise<IPagination<ICategory[]>> => {
     return await getPagination<ICategory[]>({
-        url: "categories",
+        url: CATEGORIES,
         params: {...query},
     });
 };
@@ -13,7 +14,7 @@ export const useAddCategory = async (
     category: CategoryDto
 ): Promise<ICategory> => {
     return await useRequest<ICategory>({
-        url: "categories",
+        url: CATEGORIES,
         method: "POST",
         body: category,
     });
@@ -24,7 +25,7 @@ export const useUpdateCategory = async (
     category: CategoryDto
 ): Promise<ICategory> => {
     return await useRequest<ICategory>({
-        url: `categories/${categoryId}`,
+        url: `${CATEGORIES}/${categoryId}`,
         method: "PUT",
         body: category,
     });
@@ -32,7 +33,7 @@ export const useUpdateCategory = async (
 
 export const useDeleteCategory = async (categoryId: string): Promise<void> => {
     await useRequest<void>({
-        url: `categories/${categoryId}`,
+        url: `${CATEGORIES}/${categoryId}`,
         method: "DELETE",
     });
 };
