@@ -14,6 +14,16 @@ export const useUpdate = (): [
     const [api, element] = Modal.useModal();
     const [form] = useForm();
 
+    const deleteImageTopic = (imageTopic: string) => {
+        if (!imageTopic) return;
+
+        const fileName: string = imageTopic?.split('/').pop() ?? ""
+        if (fileName)
+            useDeleteImageTopic(fileName).then(() => {
+                form.resetFields()
+            }).catch((err) => message.error(err?.message))
+    }
+
     const show = useCallback(
         async (refresh: () => void, article?: any) => {
             if (article) form.setFieldsValue({...article});
@@ -31,6 +41,7 @@ export const useUpdate = (): [
                                     .then((res: IArticle) => {
                                         message.success(` Update article [ ${messageContent(res.title, 50)} ] successfully.`)
                                         refresh()
+                                        if (article.imageTopic) deleteImageTopic(article.imageTopic)
                                         form.resetFields()
                                         close()
                                     })
@@ -50,12 +61,7 @@ export const useUpdate = (): [
                 },
                 afterClose: () => {
                     const {imageTopic} = form.getFieldsValue()
-                    console.log(imageTopic)
-                    if (imageTopic) {
-                        useDeleteImageTopic(imageTopic).then(() => {
-                            form.resetFields()
-                        }).catch((err) => message.error(err?.message))
-                    }
+                    deleteImageTopic(imageTopic)
                 },
                 icon: (
                     <div style={{marginRight: 5}}>

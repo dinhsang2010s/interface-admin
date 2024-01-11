@@ -1,10 +1,9 @@
 import {useRequest} from "../hooks/useRequest.ts";
-import {URI_API_WP_CONTENTS} from "./const.url.ts";
+import {WP_CONTENTS} from "./const.url.ts";
 
-export const useDeleteImageTopic = async (imageUri: string): Promise<void> => {
+export const useDeleteImageTopic = async (fileName: string): Promise<void> => {
     await useRequest<void>({
-        url: URI_API_WP_CONTENTS,
+        url: `${WP_CONTENTS}/${fileName}`,
         method: "DELETE",
-        params: {imageUri}
     });
 };

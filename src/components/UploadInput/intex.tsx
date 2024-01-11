@@ -14,6 +14,7 @@ interface Props {
 export const UploadInput = (props: Props) => {
     const [url, setUrl] = useState<string>("")
     const [loading, setLoading] = useState<boolean>(false);
+
     useEffect(() => {
         if (props.value) setUrl(props.value)
     }, [props.value]);
@@ -21,13 +22,14 @@ export const UploadInput = (props: Props) => {
     const propsUpload: UploadProps = {
         name: 'file',
         multiple: false,
-        showUploadList: false,
+        showUploadList: true,
         action: UPLOAD_IMAGE_TOPIC,
         accept: "image/*",
         headers: {
             Authorization: "Bearer " + localStorage.getItem("token") ?? ""
         },
         onChange(info) {
+            //todo:dele_fille
             const {status, response} = info?.file;
             if (status !== 'uploading') setLoading(true);
 
@@ -40,23 +42,24 @@ export const UploadInput = (props: Props) => {
                 setLoading(false)
             }
         },
-        onDrop(e) {
-            console.log('Dropped files', e.dataTransfer.files);
-        },
     };
 
     return (
-        <Dragger {...propsUpload}>
+        <div className="upload-input-item flex w-full" style={{height: 170}}>
             {
-                url ? <div className="upload-file" style={{padding: "0 150px"}}>
-                    <Avatar url={url}/>
+                url ? <div className="upload-file">
+                    <Avatar style={{height: "100%", borderRadius: 6}} url={url}/>
                 </div> : ""
             }
-            <p className="ant-upload-drag-icon">
-                {loading ? <LoadingOutlined/> : <InboxOutlined/>}
-            </p>
-            <p className="ant-upload-text">Click or drag file to this area to upload</p>
-        </Dragger
-        >
+            <div style={{width: url ? "40%" : "100%"}}>
+                <Dragger style={{padding: 5}} {...propsUpload}>
+                    <p className="ant-upload-drag-icon">
+                        {loading ? <LoadingOutlined/> : <InboxOutlined/>}
+                    </p>
+                    <p className="ant-upload-text">Click or drag file to this area to upload</p>
+                </Dragger>
+            </div>
+        </div>
+
     )
 };
