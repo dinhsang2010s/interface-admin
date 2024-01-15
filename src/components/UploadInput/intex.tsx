@@ -1,10 +1,11 @@
 import "./style.less"
 import {InboxOutlined, LoadingOutlined} from '@ant-design/icons';
 import {UploadProps} from "antd";
-import {useEffect, useState} from "react";
+import {useEffect, useRef, useState} from "react";
 import {Avatar} from "../Avatar";
 import Dragger from "antd/lib/upload/Dragger";
 import {UPLOAD_IMAGE_TOPIC, URI_API_WP_CONTENTS} from "../../api/const.url.ts";
+import {useDeleteImageTopic} from "../../api/upload.ts";
 
 interface Props {
     onChange?: (value: string) => void;
@@ -14,6 +15,7 @@ interface Props {
 export const UploadInput = (props: Props) => {
     const [url, setUrl] = useState<string>("")
     const [loading, setLoading] = useState<boolean>(false);
+    const fileRef = useRef<string>("")
 
     useEffect(() => {
         if (props.value) setUrl(props.value)
@@ -22,20 +24,28 @@ export const UploadInput = (props: Props) => {
     const propsUpload: UploadProps = {
         name: 'file',
         multiple: false,
-        showUploadList: true,
+        showUploadList: false,
         action: UPLOAD_IMAGE_TOPIC,
         accept: "image/*",
         headers: {
             Authorization: "Bearer " + localStorage.getItem("token") ?? ""
         },
         onChange(info) {
-            //todo:dele_fille
             const {status, response} = info?.file;
             if (status !== 'uploading') setLoading(true);
 
             if (status === 'done') {
-                const urlImg = `${URI_API_WP_CONTENTS}/${response?.fileName || ""}`
+                if (fileRef.current) {
+                    const fileName: string = fileRef.current?.split('/').pop() ?? ""
+                    if (fileName)
+                        useDeleteImageTopic(fileName).then().catch()
+                }
+
+                const urlImg = `${URI_API_WP_CONTENTS}/${response?.fileName}`
                 if (props.onChange) props.onChange(urlImg)
+
+                fileRef.current = urlImg;
+
                 setUrl(urlImg)
                 setLoading(false)
             } else if (status === 'error') {

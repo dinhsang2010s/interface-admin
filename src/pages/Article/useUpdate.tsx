@@ -7,6 +7,8 @@ import {UploadInput} from "../../components/UploadInput/intex";
 import {messageContent} from "../../utils/string.ts";
 import {useDeleteImageTopic} from "../../api/upload.ts";
 
+const {TextArea} = Input;
+
 export const useUpdate = (): [
     React.ReactElement,
     (refresh: () => void, article?: IArticle) => void
@@ -21,7 +23,7 @@ export const useUpdate = (): [
         if (fileName)
             useDeleteImageTopic(fileName).then(() => {
                 form.resetFields()
-            }).catch((err) => message.error(err?.message))
+            }).catch()
     }
 
     const show = useCallback(
@@ -72,17 +74,17 @@ export const useUpdate = (): [
                 content: (
                     <Form form={form} style={{marginRight: 10}} layout="vertical">
                         <Form.Item label="Title" name="title" rules={[{required: true}]}>
-                            <Input/>
+                            <TextArea/>
                         </Form.Item>
                         <Form.Item label="Description" name="description">
-                            <Input/>
+                            <TextArea/>
                         </Form.Item>
                         <Form.Item
                             label="Content"
                             name="content"
                             rules={[{required: true}]}
                         >
-                            <Input/>
+                            <TextArea/>
                         </Form.Item>
                         <Form.Item
                             label="Categories"

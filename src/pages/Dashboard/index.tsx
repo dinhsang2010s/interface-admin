@@ -1,5 +1,7 @@
-import "./style.less";
+import 'grapesjs/dist/css/grapes.min.css';
+import "./style.less"
+import {EditorPage} from "../../components/Editor";
 
 export const Dashboard = () => {
-    return <div className="dashboard">dashboard</div>;
-};
+    return <EditorPage/>
+}

@@ -22,7 +22,8 @@ export const Router = createBrowserRouter([
             },
             {
                 path: "users",
-                element: <div>dsadas</div>,
+                element: <div>
+                </div>,
             },
         ],
     },

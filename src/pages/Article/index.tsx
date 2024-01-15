@@ -168,9 +168,8 @@ export const Article = () => {
                                     <div className="image-topic">
                                         <Avatar
                                             style={{
-                                                width: 110,
-                                                minWidth: 110,
-                                                height: 80,
+                                                width: "100%",
+                                                height: "100%",
                                                 borderRadius: 6,
                                             }}
                                             url={article.imageTopic}
@@ -189,7 +188,7 @@ export const Article = () => {
                                             style={{
                                                 display: "flex",
                                                 alignItems: "center",
-                                                margin: "6px 0px",
+                                                margin: '5px 0px 15px'
                                             }}
                                         >
                                             <Tag color="#db5cb5">
@@ -237,7 +236,7 @@ export const Article = () => {
                                             style={{
                                                 display: "flex",
                                                 alignItems: "center",
-                                                marginTop: 10,
+                                                marginTop: 20,
                                             }}
                                         >
                                             {article.createdBy ? (
